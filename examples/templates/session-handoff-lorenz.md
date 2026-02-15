@@ -1,3 +1,9 @@
+---
+title: "Session Handoff Template"
+description: "Structured context handoff template triggered at 85% context usage to preserve intent"
+tags: [template, memory, workflows]
+---
+
 # Session Handoff Template
 
 **Inspired by**: [Robin Lorenz's Context Engineering approach](https://www.linkedin.com/posts/robin-lorenz-54055412a_claudecode-contextengineering-aiengineering-activity-7425136701515251713) (Feb 2026)

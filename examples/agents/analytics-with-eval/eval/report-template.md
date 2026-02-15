@@ -1,3 +1,9 @@
+---
+title: "Analytics Agent Evaluation Report"
+description: "Monthly evaluation template for scoring analytics agent performance and accuracy"
+tags: [template, agents, testing]
+---
+
 # Analytics Agent Evaluation Report
 
 **Month**: [YYYY-MM]

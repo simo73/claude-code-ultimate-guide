@@ -1,3 +1,9 @@
+---
+title: "claude-mem Plugin Template"
+description: "Automatic persistent memory plugin capturing tool calls and decisions across sessions"
+tags: [plugin, memory, integration]
+---
+
 # claude-mem Plugin Template
 
 **Purpose**: Automatic persistent memory across Claude Code sessions

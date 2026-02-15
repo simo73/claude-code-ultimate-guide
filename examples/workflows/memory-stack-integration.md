@@ -1,3 +1,9 @@
+---
+title: "Memory Stack Integration: Real-World Multi-Day Workflow"
+description: "5-day sprint example combining claude-mem, Serena, grepai and rg for auth refactoring"
+tags: [workflow, memory, integration]
+---
+
 # Memory Stack Integration: Real-World Multi-Day Workflow
 
 **Scenario**: Refactoring authentication system from session-based to JWT across a 5-day sprint
