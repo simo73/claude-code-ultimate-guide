@@ -1757,13 +1757,13 @@ The 1M context window (beta, API + usage tier 4 required) is a significant capab
 
 **Retrieval accuracy at scale (MRCR v2 8-needle 1M variant)**
 
-| Model | 1M accuracy | Source |
-|-------|-------------|--------|
-| Opus 4.6 | 76% | Anthropic blog (Feb 2026) |
-| Sonnet 4.5 | 18.5% | Anthropic blog (Feb 2026) |
-| Sonnet 4.6 | Not yet published | — |
+| Model | 256K accuracy | 1M accuracy | Source |
+|-------|--------------|-------------|--------|
+| Opus 4.6 | 93% | 76% | Anthropic blog + independent analysis (Feb 2026) |
+| Sonnet 4.5 | — | 18.5% | Anthropic blog (Feb 2026) |
+| Sonnet 4.6 | Not yet published | Not yet published | — |
 
-Note: Opus 4.6 retains strong accuracy at 1M (76%), Sonnet 4.5 degrades sharply. The benchmark is specifically the "8-needle 1M variant" measuring retrieval in a 1M-token document. Sonnet 4.6 MRCR scores have not yet been published by Anthropic.
+Note: Opus 4.6 retains strong accuracy at 1M (76%), Sonnet 4.5 degrades sharply. The benchmark is the "8-needle 1M variant" — finding 8 specific facts in a 1M-token document. The 93% figure at 256K comes from independent analysis of Anthropic's published data. Community validation: a developer loaded ~733K tokens (4 Harry Potter books) and Opus 4.6 retrieved 49/50 documented spells in a single prompt ([HN, Feb 2026](https://news.ycombinator.com/item?id=46905735)). Sonnet 4.6 MRCR scores not yet published.
 
 **Cost per session (approximate)**
 
