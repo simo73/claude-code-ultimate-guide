@@ -225,6 +225,18 @@ Après ces modifications, **rappeler** de mettre à jour le landing:
 3. **Modification Golden Rules ou FAQ** → Répercuter sur landing
 4. **Changement significatif du guide** (>100 lignes)
 
+### Rebuild du guide reader (à chaque release)
+
+Le landing expose le contenu du guide sur `cc.bruniaux.com/guide/`. Le contenu est généré depuis ce repo au moment du build — **jamais commité dans le landing**.
+
+```bash
+# Depuis le repo landing, avant chaque push sur main :
+cd ../claude-code-ultimate-guide-landing
+node scripts/prepare-guide-content.mjs && pnpm build
+```
+
+**Quand le faire** : à chaque release (`/release patch|minor|major`) pour que le site reflète la dernière version du guide.
+
 ### Commande de vérification
 
 ```bash
