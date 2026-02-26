@@ -10,13 +10,13 @@ tags: [reference, release]
 > **Full details**: [github.com/anthropics/claude-code/CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 > **Machine-readable**: [claude-code-releases.yaml](../machine-readable/claude-code-releases.yaml)
 
-**Latest**: v2.1.56 | **Updated**: 2026-02-25
+**Latest**: v2.1.59 | **Updated**: 2026-02-26
 
 ---
 
 ## Quick Jump
 
-- [2.1.x Series (January-February 2026)](#21x-series-january-february-2026) — Worktree isolation, background agents, ConfigChange hook, Fast mode Opus 4.6, 1M context, claude.ai MCP connectors, remote-control, BashTool perf
+- [2.1.x Series (January-February 2026)](#21x-series-january-february-2026) — Worktree isolation, background agents, ConfigChange hook, Fast mode Opus 4.6, 1M context, claude.ai MCP connectors, remote-control, auto-memory, /copy command
 - [2.0.x Series (Nov 2025 - Jan 2026)](#20x-series-november-2025---january-2026) — Opus 4.5, Claude in Chrome, Background agents
 - [Breaking Changes Summary](#breaking-changes-summary)
 - [Milestone Features](#milestone-features)
@@ -24,6 +24,21 @@ tags: [reference, release]
 ---
 
 ## 2.1.x Series (January-February 2026)
+
+### v2.1.59 (2026-02-26)
+
+- **New**: Auto-memory — Claude automatically saves useful context to memory; manage with `/memory`
+- **New**: `/copy` command — interactive picker when code blocks are present, select individual blocks or full response
+- **Improved**: Smarter "always allow" prefix suggestions for compound bash commands (per-subcommand prefixes instead of treating whole command as one)
+- **Improved**: Memory usage in multi-agent sessions (releases completed subagent task state)
+- **Improved**: Ordering of short task lists
+- **Fixed**: MCP OAuth token refresh race condition when running multiple Claude Code instances simultaneously
+- **Fixed**: Shell commands not showing clear error message when working directory has been deleted
+- **Fixed**: Config file corruption that could wipe authentication when multiple Claude Code instances ran simultaneously
+
+### v2.1.58 (2026-02-26)
+
+- **Expanded**: Remote Control available to more users
 
 ### v2.1.56 (2026-02-25)
 
