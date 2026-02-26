@@ -46,7 +46,7 @@ questions:
       - **UserPromptSubmit**: When user sends a message (context enrichment)
       - **Notification**: When Claude sends a notification
       - **SessionStart/SessionEnd**: Session lifecycle events
-      - **Stop**: When user interrupts
+      - **Stop**: When Claude finishes responding
     doc_reference:
       file: "guide/ultimate-guide.md"
       section: "7.1 The Event System"

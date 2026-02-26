@@ -133,7 +133,7 @@ claude "Create a brief incident note for our wiki:
 For persistent K8s context, install the K8s MCP server:
 
 ```json
-// ~/.claude/mcp.json
+// ~/.claude.json (or .mcp.json)
 {
   "mcpServers": {
     "kubernetes": {
@@ -831,7 +831,7 @@ approval_required:
 | Prometheus | Direct metrics queries | Community: search awesome-mcp-servers |
 | Terraform | State/plan analysis | Community: search awesome-mcp-servers |
 
-**Config location**: `~/.claude/mcp.json`
+**Config location**: `~/.claude.json` (field `"mcpServers"`)
 
 ```json
 {

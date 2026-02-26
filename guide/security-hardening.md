@@ -39,7 +39,7 @@ Model Context Protocol (MCP) servers extend Claude Code's capabilities but intro
 ┌─────────────────────────────────────────────────────────────┐
 │  1. Attacker publishes benign MCP "code-formatter"          │
 │                         ↓                                    │
-│  2. User adds to ~/.claude/mcp.json, approves once          │
+│  2. User adds to ~/.claude.json, approves once               │
 │                         ↓                                    │
 │  3. MCP works normally for 2 weeks (builds trust)           │
 │                         ↓                                    │
@@ -224,6 +224,18 @@ Because `permissions.deny` alone cannot guarantee complete protection:
 5. **Review bash commands** — Manually inspect before approving execution
 
 > **Bottom line**: `permissions.deny` is necessary but not sufficient. Treat it as one layer in a defense-in-depth strategy, not a complete solution.
+
+#### Built-in Permission Safeguards
+
+Beyond explicit deny rules, Claude Code has several built-in protections:
+
+| Safeguard | Behavior |
+|-----------|----------|
+| **Command blocklist** | `curl` and `wget` are blocked by default in the sandbox to prevent arbitrary web content fetching |
+| **Fail-closed matching** | Any permission rule that doesn't match defaults to requiring manual approval (deny by default) |
+| **Command injection detection** | Suspicious bash commands require manual approval even if previously allowlisted |
+
+These protections work automatically without configuration. The fail-closed design means a misconfigured permission rule fails safe rather than granting unintended access.
 
 ### 1.4 Repository Pre-Scan
 
@@ -497,7 +509,7 @@ If you suspect an MCP server has been compromised:
 1. **Disable immediately**
    ```bash
    # Remove from config
-   jq 'del(.mcpServers.<suspect>)' ~/.claude/mcp.json > tmp && mv tmp ~/.claude/mcp.json
+   jq 'del(.mcpServers.<suspect>)' ~/.claude.json > tmp && mv tmp ~/.claude.json
 
    # Or edit manually and restart Claude
    ```
@@ -505,8 +517,8 @@ If you suspect an MCP server has been compromised:
 2. **Verify config integrity**
    ```bash
    # Check for unauthorized changes
-   sha256sum ~/.claude/mcp.json
-   diff ~/.claude/mcp.json ~/.claude/mcp.json.backup
+   sha256sum ~/.claude.json
+   diff ~/.claude.json ~/.claude.json.backup
 
    # Check project-level config too
    cat .mcp.json 2>/dev/null
@@ -519,7 +531,7 @@ If you suspect an MCP server has been compromised:
 
 4. **Restore from known-good backup**
    ```bash
-   cp ~/.claude/mcp.json.backup ~/.claude/mcp.json
+   cp ~/.claude.json.backup ~/.claude.json
    ```
 
 ### 3.3 Automated Security Audit
@@ -696,7 +708,7 @@ exit 0
 gitleaks detect --source . --verbose
 
 # Check MCP config
-cat ~/.claude/mcp.json | jq '.mcpServers | keys'
+cat ~/.claude.json | jq '.mcpServers | keys'
 
 # Verify hook installation
 ls -la ~/.claude/hooks/
@@ -847,7 +859,7 @@ Local terminal ──HTTPS outbound──► Anthropic relay ──► Mobile/Br
 **Security properties:**
 - Zero inbound ports (reduces attack surface vs SSH tunnels or ngrok)
 - HTTPS only (encrypted in transit)
-- Session URL = short-lived authentication token
+- Multiple short-lived, narrowly scoped credentials (each limited to a specific purpose, expiring independently)
 - Execution stays 100% local
 
 ### Threat Model

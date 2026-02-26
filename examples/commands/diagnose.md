@@ -51,7 +51,7 @@ cat .claude/settings.json 2>/dev/null || echo "No project settings"
 ls -la CLAUDE.md .claude/CLAUDE.md ~/.claude/CLAUDE.md 2>/dev/null
 
 # MCP config
-cat ~/.claude/mcp.json 2>/dev/null || echo "No MCP config"
+cat ~/.claude.json 2>/dev/null | jq '.mcpServers // empty' || echo "No MCP config"
 ```
 
 ### Step 4: Present Categories
@@ -150,13 +150,13 @@ cat ~/.claude/settings.json | jq '.permissions.allow'
 
 **Likely causes**:
 1. Server not installed globally
-2. Wrong path in mcp.json
+2. Wrong path in MCP config
 3. Missing environment variables
 
 **Quick diagnostic**:
 ```bash
 # Check MCP config
-cat ~/.claude/mcp.json | jq '.mcpServers'
+cat ~/.claude.json | jq '.mcpServers'
 
 # Check if server binary exists
 which mcp-server-sequential

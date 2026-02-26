@@ -170,7 +170,7 @@ While Anthropic investigates:
    ```
 
 4. **Reduce MCP tools** if not needed:
-   - Review `~/.claude/mcp.json`
+   - Review `~/.claude.json` (field `"mcpServers"`)
    - Disable unused servers
 
 5. **Use subagents** for isolated tasks:

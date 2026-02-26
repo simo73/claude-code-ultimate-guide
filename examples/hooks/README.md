@@ -54,7 +54,7 @@ Hooks are scripts that execute automatically on Claude Code events. They enable 
 | `Notification` | When Claude sends a notification | Sound alerts, external notifications |
 | `SessionStart` | At session start | Initialization, environment setup |
 | `SessionEnd` | At session end | Cleanup, session summary |
-| `Stop` | User interrupts operation | State saving, graceful shutdown |
+| `Stop` | Claude finishes responding | Post-response actions, state saving |
 
 ## Advanced Guardrails (NEW in v3.3.0)
 

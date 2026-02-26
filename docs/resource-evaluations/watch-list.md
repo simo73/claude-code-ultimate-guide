@@ -16,6 +16,7 @@ Trigger reached → re-evaluation → Integrate (Graduated) / Drop (Dropped)
 
 | Resource | Type | Added | Why Watching | Re-eval Trigger |
 |----------|------|-------|--------------|-----------------|
+| [save-webpage-to-obsidian](https://github.com/benoitvx/claude-skill-save-webpage-to-obsidian) | Skill | 2026-02-25 | Skill Claude Code qui archive des articles web dans un vault Obsidian (dual extraction: Chrome MCP + WebFetch). Pattern dual-strategy intéressant mais config hardcodée, sécurité non adressée, pas de métriques adoption. Score 2/5. | >200 stars GitHub |
 | [fp.dev](https://fp.dev/) | Tool | 2026-02-22 | Agent-native issue tracking pour Claude Code. Un vrai différentiateur (issues .md git-committables) mais adoption insuffisante, Apple Silicon only, redondant avec Tasks API. Score 2/5. | GitHub stars visibles + release cadence + write-up praticien en prod |
 | [ICM](https://github.com/rtk-ai/icm) | MCP | 2026-02-12 | Pre-v1 (1 star, 11 commits) | First release + >20 stars |
 | [System Prompts](https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools) | Tool | 2026-01-26 | Redundant with official sources. Re-evaluated 2026-02-13 (Opus 4.6 update): still 2/5. | Anthropic confirms CLI prompts not published |

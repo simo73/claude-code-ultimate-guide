@@ -190,27 +190,26 @@ This asymmetric policy balances usability and security:
 - **Read all**: Claude needs to search/analyze entire codebase, read system configs, inspect dependencies
 - **Write CWD**: Most development work happens within project directory; restricting writes prevents accidental/malicious system modifications
 
-### Configurable Paths
+### Configuring Filesystem Restrictions
 
-Customize via `settings.json`:
+Filesystem restrictions are configured through **permission rules** (Read/Edit deny rules), not sandbox settings:
 
 ```json
 {
-  "sandbox": {
-    "filesystem": {
-      "allowedWritePaths": [
-        "/Users/you/projects/my-app",
-        "/tmp"
-      ],
-      "deniedReadPaths": [
-        "/Users/you/.ssh",
-        "/Users/you/.aws",
-        "/Users/you/.kube"
-      ]
-    }
+  "permissions": {
+    "deny": [
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.kube/**)",
+      "Edit(~/.ssh/**)",
+      "Edit(~/.aws/**)",
+      "Edit(~/.kube/**)"
+    ]
   }
 }
 ```
+
+Write access is inherently restricted to CWD by the sandbox. To block reads to sensitive directories, use permission deny rules as shown above.
 
 **⚠️ Security Warning**: Overly broad write permissions enable privilege escalation:
 
@@ -223,7 +222,7 @@ Customize via `settings.json`:
 
 ### Proxy Architecture
 
-All network connections from sandboxed commands are routed through a SOCKS5 proxy running **outside** the sandbox:
+All network connections from sandboxed commands are routed through a SOCKS5 proxy running **outside** the sandbox. The proxy restricts which domains processes can connect to, but **does not inspect the content of traffic** passing through it (privacy note: no deep packet inspection).
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -310,6 +309,8 @@ For advanced use cases (HTTPS inspection, enterprise proxies):
 - Explicit ask/deny rules **always respected**
 
 **⚠️ Important**: Auto-allow mode is **independent** of permission mode (default/auto-accept/plan). Even in "default" mode, sandboxed bash commands run without prompts.
+
+**Built-in blocklist**: Even in auto-allow mode, commands like `curl` and `wget` are blocked by default to prevent arbitrary web content fetching.
 
 **When to use**: Daily development, autonomous refactors, CI/CD pipelines
 
@@ -459,8 +460,8 @@ Excluded commands always run outside sandbox (with normal permission prompts).
 
 **Mitigation**:
 
-- ✅ **Restrict writes to project directories only**
-- ✅ **Audit `allowedWritePaths` carefully**
+- ✅ **Restrict writes to project directories only** (sandbox default)
+- ✅ **Use permission deny rules to block sensitive reads**
 - ✅ **Monitor sandbox violation logs**
 
 ### Linux: Nested Sandbox Weakness
@@ -567,22 +568,11 @@ flowchart TD
 ### Strict Security (Denylist Mode)
 
 ```json
+// settings.json — sandbox settings
 {
   "sandbox": {
     "autoAllowMode": true,
     "allowUnsandboxedCommands": false,
-    "filesystem": {
-      "allowedWritePaths": [
-        "/Users/you/projects/my-app",
-        "/tmp"
-      ],
-      "deniedReadPaths": [
-        "/Users/you/.ssh",
-        "/Users/you/.aws",
-        "/Users/you/.kube",
-        "/Users/you/.gnupg"
-      ]
-    },
     "network": {
       "policy": "deny",
       "allowedDomains": [
@@ -594,6 +584,13 @@ flowchart TD
       ]
     },
     "excludedCommands": []
+  },
+  "permissions": {
+    "deny": [
+      "Read(~/.ssh/**)", "Read(~/.aws/**)",
+      "Read(~/.kube/**)", "Read(~/.gnupg/**)",
+      "Edit(~/.ssh/**)", "Edit(~/.aws/**)"
+    ]
   }
 }
 ```
@@ -605,15 +602,6 @@ flowchart TD
   "sandbox": {
     "autoAllowMode": true,
     "allowUnsandboxedCommands": true,
-    "filesystem": {
-      "allowedWritePaths": [
-        "${CWD}"
-      ],
-      "deniedReadPaths": [
-        "${HOME}/.ssh",
-        "${HOME}/.aws"
-      ]
-    },
     "network": {
       "policy": "allow",
       "blockedDomains": [
@@ -621,6 +609,12 @@ flowchart TD
       ]
     },
     "excludedCommands": ["docker", "kubectl"]
+  },
+  "permissions": {
+    "deny": [
+      "Read(~/.ssh/**)", "Read(~/.aws/**)",
+      "Edit(~/.ssh/**)", "Edit(~/.aws/**)"
+    ]
   }
 }
 ```
@@ -632,13 +626,6 @@ flowchart TD
   "sandbox": {
     "autoAllowMode": true,
     "allowUnsandboxedCommands": true,
-    "filesystem": {
-      "allowedWritePaths": [
-        "${CWD}",
-        "/tmp",
-        "${HOME}/.cache"
-      ]
-    },
     "network": {
       "policy": "allow"
     },
@@ -653,7 +640,7 @@ flowchart TD
 
 1. **Start restrictive, expand as needed** - Begin with denylist mode, whitelist domains/paths incrementally
 2. **Monitor sandbox violations** - Review logs to understand Claude's access patterns
-3. **Audit `allowedWritePaths`** - Never allow writes to `$PATH` dirs, shell configs, or system directories
+3. **Audit permission deny rules** - Use Read/Edit deny rules to block access to sensitive directories (`~/.ssh`, `~/.aws`, `~/.kube`)
 4. **Avoid broad CDN domains** - Whitelist specific subdomains (`my-app.pages.dev`) instead of `*.cloudflare.com`
 5. **Disable escape hatch in production** - Set `allowUnsandboxedCommands: false` for CI/CD, untrusted environments
 6. **Combine with IAM policies** - Use sandboxing **alongside** [permission settings](https://code.claude.com/docs/en/iam) for defense-in-depth

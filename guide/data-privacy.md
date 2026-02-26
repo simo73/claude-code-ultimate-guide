@@ -12,9 +12,10 @@ tags: [privacy, security, guide]
 
 | Configuration | Retention Period | Training | How to Enable |
 |---------------|------------------|----------|---------------|
-| **Default** | 5 years | Yes | (default state) |
-| **Opt-out** | 30 days | No | [claude.ai/settings](https://claude.ai/settings/data-privacy-controls) |
-| **Enterprise (ZDR)** | 0 days | No | Enterprise contract |
+| **Consumer (default)** | 5 years | Yes | (default state) |
+| **Consumer (opt-out)** | 30 days | No | [claude.ai/settings](https://claude.ai/settings/data-privacy-controls) |
+| **Team / Enterprise / API** | 30 days | No (default) | Use Team, Enterprise plan, or API keys |
+| **ZDR (Zero Data Retention)** | 0 days server-side | No | Appropriately configured API keys |
 
 **Immediate action**: [Disable training data usage](https://claude.ai/settings/data-privacy-controls) to reduce retention from 5 years to 30 days.
 
@@ -35,16 +36,20 @@ When you use Claude Code, the following data is sent to Anthropic:
 │  • MCP server results (SQL queries, API responses)          │
 │  • Bash command outputs                                     │
 │  • Error messages and stack traces                          │
-└───────────────────────┬─────────────────────────────────────┘
-                        │
-                        ▼ HTTPS
-┌─────────────────────────────────────────────────────────────┐
-│                    ANTHROPIC API                            │
-├─────────────────────────────────────────────────────────────┤
-│  • Processes your request                                   │
-│  • Stores conversation based on retention policy            │
-│  • May use data for model training (if not opted out)       │
-└─────────────────────────────────────────────────────────────┘
+└───────────┬──────────────────┬──────────────┬───────────────┘
+            │                  │              │
+            ▼ HTTPS/TLS       ▼ HTTPS        ▼ HTTPS
+┌───────────────────┐ ┌──────────────┐ ┌─────────────────────┐
+│   ANTHROPIC API   │ │   STATSIG    │ │       SENTRY        │
+├───────────────────┤ ├──────────────┤ ├─────────────────────┤
+│ • Your prompts    │ │ • Latency,   │ │ • Error logs        │
+│ • Model responses │ │   reliability│ │ • No code or        │
+│ • Retention per   │ │ • No code or │ │   file paths        │
+│   your tier       │ │   file paths │ │                     │
+└───────────────────┘ └──────────────┘ └─────────────────────┘
+                       (opt-out:        (opt-out:
+                       DISABLE_         DISABLE_ERROR_
+                       TELEMETRY=1)     REPORTING=1)
 ```
 
 ### What This Means in Practice
@@ -61,13 +66,13 @@ When you use Claude Code, the following data is sent to Anthropic:
 
 ## 2. Anthropic Retention Policies
 
-### Tier 1: Default (Training Enabled)
+### Tier 1: Consumer Default (Training Enabled)
 
 - **Retention**: 5 years
 - **Usage**: Model improvement, training data
-- **Applies to**: Free, Pro, Max plans without opt-out
+- **Applies to**: Free, Pro, Max plans with training setting ON
 
-### Tier 2: Training Disabled (Opt-Out)
+### Tier 2: Consumer Opt-Out (Training Disabled)
 
 - **Retention**: 30 days
 - **Usage**: Safety monitoring, abuse prevention only
@@ -76,12 +81,21 @@ When you use Claude Code, the following data is sent to Anthropic:
   2. Disable "Allow model training on your conversations"
   3. Changes apply immediately
 
-### Tier 3: Enterprise API (Zero Data Retention)
+### Tier 3: Commercial (Team / Enterprise / API)
 
-- **Retention**: 0 days (real-time processing only)
-- **Usage**: None - data not stored
-- **Requires**: Enterprise contract with Anthropic
-- **Use cases**: HIPAA, GDPR, PCI-DSS compliance, government contracts
+- **Retention**: 30 days
+- **Usage**: Safety monitoring, abuse prevention only
+- **Training**: Not used for training by default (no opt-out needed)
+- **Applies to**: Team plans, Enterprise plans, API users, third-party platforms, Claude Gov
+
+### Tier 4: Zero Data Retention (ZDR)
+
+- **Retention**: 0 days server-side (local client cache may persist up to 30 days)
+- **Usage**: None retained on Anthropic servers
+- **Requires**: Appropriately configured API keys (see [Anthropic documentation](https://www.anthropic.com/enterprise))
+- **Use cases**: HIPAA (requires separate BAA), GDPR, PCI-DSS compliance, government contracts
+
+> **Important**: Data is encrypted in transit via TLS but is **not encrypted at rest** on Anthropic servers. Factor this into your security assessments.
 
 ---
 
@@ -127,7 +141,21 @@ STRIPE_SECRET_KEY=sk_live_...
 
 **Mitigation**: Use hooks to filter sensitive command outputs.
 
-### Risk 4: Documented Community Incidents
+### Risk 4: The `/bug` Command Sends Everything (Retained 5 Years)
+
+When you run `/bug` in Claude Code, your **full conversation history** (including all code, file contents, and potentially secrets) is sent to Anthropic for bug triage. This data is retained for **5 years**, regardless of your training opt-out setting.
+
+This is independent of your privacy preferences: even with training disabled and 30-day retention, bug reports follow their own 5-year retention policy.
+
+**Mitigation**: Disable the command entirely if you work with sensitive codebases:
+
+```bash
+export DISABLE_BUG_COMMAND=1
+```
+
+Or add it to your shell profile (`~/.zshrc`, `~/.bashrc`) to make it permanent.
+
+### Risk 5: Documented Community Incidents
 
 | Incident | Source |
 |----------|--------|
@@ -194,6 +222,29 @@ if [[ "$TOOL_NAME" == "Read" ]]; then
     fi
 fi
 ```
+
+#### 4.4 Opt-Out of Telemetry and Error Reporting
+
+Claude Code connects to third-party services for operational metrics (Statsig) and error logging (Sentry). These do not include your code or file paths, but you can disable them entirely:
+
+| Variable | What it Disables |
+|----------|-----------------|
+| `DISABLE_TELEMETRY=1` | Statsig operational metrics (latency, reliability, usage patterns) |
+| `DISABLE_ERROR_REPORTING=1` | Sentry error logging |
+| `DISABLE_BUG_COMMAND=1` | The `/bug` command (prevents sending full conversation history) |
+| `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1` | All non-essential network traffic at once |
+| `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY=1` | Session quality surveys (note: surveys only send your numeric rating, never transcripts) |
+
+Add these to your shell profile for permanent effect:
+
+```bash
+# In ~/.zshrc or ~/.bashrc
+export DISABLE_TELEMETRY=1
+export DISABLE_ERROR_REPORTING=1
+export DISABLE_BUG_COMMAND=1
+```
+
+> **Note**: When using Bedrock, Vertex, or Foundry providers, all non-essential traffic (telemetry, error reporting, bug command, surveys) is disabled by default.
 
 ### MCP Best Practices
 
@@ -338,6 +389,7 @@ Anthropic published Claude's constitution in January 2026 (CC0 license - public 
 
 ## Changelog
 
+- 2026-02: Fixed retention model (3 tiers to 4 tiers), added /bug command warning, telemetry opt-out variables, encryption-at-rest disclosure, updated ZDR conditions
 - 2026-01: Added Claude's governance & constitutional AI framework section
 - 2026-01: Added intellectual property considerations section
 - 2026-01: Initial version - documenting retention policies and protective measures

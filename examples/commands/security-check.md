@@ -26,10 +26,10 @@ Read the user's MCP configuration:
 
 ```bash
 # Global MCP config
-cat ~/.claude/mcp.json 2>/dev/null
+cat ~/.claude.json 2>/dev/null | jq '.mcpServers // empty'
 
 # Project MCP config
-cat .claude/mcp.json 2>/dev/null
+cat .mcp.json 2>/dev/null
 ```
 
 **Check against threat-db.yaml:**

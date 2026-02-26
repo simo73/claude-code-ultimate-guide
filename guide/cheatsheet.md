@@ -94,8 +94,10 @@ tags: [cheatsheet, reference]
 | Mode | Editing | Execution |
 |------|---------|-----------|
 | Default | Asks | Asks |
-| Auto-accept | Auto | Asks |
+| acceptEdits | Auto | Asks |
 | Plan Mode | ❌ | ❌ |
+| dontAsk | Only if in allow rules | Only if in allow rules |
+| bypassPermissions | Auto | Auto (CI/CD only) |
 
 **Shift+Tab** to switch modes
 
@@ -222,7 +224,9 @@ Model: Sonnet | Ctx: 89.5k | Cost: $2.11 | Ctx(u): 56.0%
 |---------|--------|-------------|
 | **Alt+T** | Toggle thinking on/off | Session |
 | **/config** | Enable/disable globally | Permanent |
-| **`effort` param** | API only: `low\|medium\|high\|max` | Per-request |
+| **`/model` slider** | Left/right arrows: `low\|medium\|high` | Session |
+| **`CLAUDE_CODE_EFFORT_LEVEL`** | Env var: `low\|medium\|high` | Shell session |
+| **`effortLevel` setting** | In settings.json: `low\|medium\|high` | Permanent |
 
 **Cost tip**: For simple tasks, Alt+T to disable thinking → faster & cheaper.
 
@@ -389,10 +393,15 @@ VERIFY: Empty email shows error, invalid format shows error
 | `--model sonnet` | Change model |
 | `--add-dir ../lib` | Allow access outside CWD |
 | `--permission-mode plan` | Plan mode |
+| `--tools "Tool1,Tool2"` | Enable specific tools for session |
+| `--max-budget-usd 5.00` | Max API spend limit (print mode) |
+| `--system-prompt "..."` | Append custom system prompt |
+| `--worktree` / `-w` | Run in isolated git worktree |
 | `--dangerously-skip-permissions` | Auto-accept (use carefully) |
 | `--debug` | Debug output |
-| `--mcp-debug` | Debug MCP servers |
 | `--allowedTools "Edit,Read"` | Whitelist tools |
+
+> Full CLI reference (~45 flags): see [cli-reference on code.claude.com](https://docs.anthropic.com/en/docs/claude-code/cli-reference)
 
 ---
 

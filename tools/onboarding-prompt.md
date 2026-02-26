@@ -223,7 +223,7 @@ Based on the goal from Phase 0, ask ONLY the necessary additional questions:
    When presenting security topics, add a hands-on option alongside the usual depth controls:
    - After sandbox/permissions topic → "Try: Run `/security-check` to scan your current setup"
    - After threat intelligence topic → "Try: Check your installed skills against known malicious patterns"
-   - After MCP vetting topic → "Try: Review your `~/.claude/mcp.json` against the MCP Safe List"
+   - After MCP vetting topic → "Try: Review your `~/.claude.json` against the MCP Safe List"
 
 4. **Depth control**: Use AskUserQuestion with options:
    - "Go deeper" → Provide detailed explanation with examples

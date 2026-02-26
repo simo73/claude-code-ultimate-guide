@@ -165,7 +165,7 @@ python -m mcp_server_git
 docker run -v /path/to/repo:/repo ghcr.io/modelcontextprotocol/mcp-server-git
 ```
 
-**Claude Desktop Configuration** (`~/.claude/mcp.json`):
+**Claude Code Configuration** (`~/.claude.json`):
 
 ```json
 {
@@ -308,7 +308,7 @@ npm install @microsoft/playwright-mcp
 npx @microsoft/playwright-mcp
 ```
 
-**Claude Desktop Configuration** (`~/.claude/mcp.json`):
+**Claude Code Configuration** (`~/.claude.json`):
 
 ```json
 {
@@ -1050,7 +1050,7 @@ proxy:
 **Generate Claude Desktop Config**:
 
 ```bash
-./mcp-compose create-config --type claude --output ~/.claude/mcp.json
+./mcp-compose create-config --type claude --output ~/.claude.json
 ```
 
 **Start Servers**:

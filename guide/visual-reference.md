@@ -309,7 +309,7 @@ How a malicious MCP server can exploit the one-time approval model:
 ┌─────────────────────────────────────────────────────────────┐
 │  1. Attacker publishes benign MCP "code-formatter"          │
 │                         ↓                                    │
-│  2. User adds to ~/.claude/mcp.json, approves once          │
+│  2. User adds to ~/.claude.json, approves once               │
 │                         ↓                                    │
 │  3. MCP works normally for 2 weeks (builds trust)           │
 │                         ↓                                    │

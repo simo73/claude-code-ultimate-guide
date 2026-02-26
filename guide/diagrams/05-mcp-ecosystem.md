@@ -213,9 +213,9 @@ MCP server configurations can live in 4 different locations. The resolution orde
 
 ```mermaid
 flowchart TD
-    A["1️⃣ CLI: --mcp-config path/to/mcp.json<br/>Highest priority — overrides all"] --> B["2️⃣ Project: .claude/mcp.json<br/>Team-shared, checked into git"]
-    B --> C["3️⃣ Project Root: .mcp.json<br/>Alternative project location"]
-    C --> D["4️⃣ Global: ~/.claude/mcp.json<br/>Personal servers, all projects"]
+    A["1️⃣ CLI: --mcp-config path/to/config.json<br/>Highest priority — overrides all"] --> B["2️⃣ Project Root: .mcp.json<br/>Team-shared, checked into git"]
+    B --> C["3️⃣ Local scope: ~/.claude.json<br/>Private to you + current project"]
+    C --> D["4️⃣ User scope: ~/.claude.json<br/>Personal servers, all projects"]
     D --> E["5️⃣ No MCP servers<br/>Default (no config found)"]
 
     A1["Use for:<br/>CI/CD overrides<br/>temporary testing"] --> A
@@ -234,7 +234,7 @@ flowchart TD
     click A href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#83-configuration" "CLI --mcp-config flag"
     click B href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#83-configuration" "Project .claude/mcp.json"
     click C href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#83-configuration" "Project Root .mcp.json"
-    click D href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#83-configuration" "Global ~/.claude/mcp.json"
+    click D href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#83-configuration" "User scope ~/.claude.json"
     click E href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#81-what-is-mcp" "No MCP servers"
     click A1 href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#83-configuration" "CI/CD overrides"
     click B1 href "https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/guide/ultimate-guide.md#83-configuration" "Team-shared servers"
@@ -247,9 +247,9 @@ flowchart TD
 ```
 PRIORITY (highest → lowest):
 1. --mcp-config flag  → CLI override, temporary
-2. .claude/mcp.json   → team-shared (git-tracked)
-3. .mcp.json          → project root alternative
-4. ~/.claude/mcp.json → personal global servers
+2. .mcp.json          → project-scope (git-tracked, shareable)
+3. ~/.claude.json      → local scope (private, current project)
+4. ~/.claude.json      → user scope (personal, all projects)
 5. (none)             → no MCP servers available
 ```
 

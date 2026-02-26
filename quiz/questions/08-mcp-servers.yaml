@@ -105,25 +105,25 @@ questions:
   - id: "08-005"
     difficulty: "junior"
     profiles: ["junior", "senior", "power"]
-    question: "Where is the global MCP configuration file located?"
+    question: "Where is the user-scope MCP configuration stored?"
     options:
       a: "~/.mcp/config.json"
-      b: "~/.claude/mcp.json"
+      b: "~/.claude.json"
       c: "/etc/claude/mcp.json"
       d: "~/.config/claude/mcp.json"
     correct: "b"
     explanation: |
-      The global MCP configuration is at `~/.claude/mcp.json`.
+      MCP servers are configured in `~/.claude.json` under the `"mcpServers"` field.
 
       Configuration locations:
-      - `~/.claude/mcp.json` - Global (applies to all projects)
-      - `/project/.claude/mcp.json` - Project-specific (overrides global)
+      - `~/.claude.json` (field `"mcpServers"`) - User/local scope
+      - `.mcp.json` at project root - Project scope (shareable via VCS)
 
       The configuration specifies which servers to run and their settings.
     doc_reference:
       file: "guide/ultimate-guide.md"
       section: "8.3 Configuration"
-      anchor: "#mcpjson-location"
+      anchor: "#mcp-configuration-location"
 
   - id: "08-006"
     difficulty: "senior"
@@ -177,24 +177,26 @@ questions:
   - id: "08-008"
     difficulty: "junior"
     profiles: ["junior", "senior", "power"]
-    question: "What variable can you use in mcp.json to reference the current project path?"
+    question: "What syntax does Claude Code use for environment variable substitution in MCP config?"
     options:
       a: "${projectPath}"
       b: "${workspaceFolder}"
-      c: "${cwd}"
+      c: "${VAR_NAME}"
       d: "${PROJECT_DIR}"
-    correct: "b"
+    correct: "c"
     explanation: |
-      The `${workspaceFolder}` variable expands to the current project path.
+      Claude Code uses standard shell-style `${VAR}` syntax for environment variable expansion.
 
-      Variable substitution in mcp.json:
-      - `${workspaceFolder}` - Current project path
-      - `${env:VAR_NAME}` - Environment variable
+      Variable substitution in MCP config:
+      - `${VAR}` - Environment variable value
+      - `${VAR:-default}` - Environment variable with fallback
+
+      Note: `${workspaceFolder}` and `${env:VAR_NAME}` are VS Code conventions, not Claude Code.
 
       Example:
       ```json
       "env": {
-        "PROJECT_PATH": "${workspaceFolder}"
+        "DATABASE_URL": "${DATABASE_URL}"
       }
       ```
     doc_reference:

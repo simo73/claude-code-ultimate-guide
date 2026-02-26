@@ -563,7 +563,7 @@ Claude Code has a layered security model:
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │ {                                                      │ │
 │  │   "permissions": {                                     │ │
-│  │     "allow": ["Bash(npm:*)", "Read(**)"],              │ │
+│  │     "allow": ["Bash(npm *)", "Read"],              │ │
 │  │     "deny": ["Bash(rm -rf *)"]                         │ │
 │  │   }                                                    │ │
 │  │ }                                                      │ │
@@ -720,21 +720,21 @@ Hooks allow programmatic control over Claude's actions:
 
 | Capability | Supported | How |
 |------------|-----------|-----|
-| Block execution | Yes | Exit code != 0 |
+| Block execution | Yes | Exit code 2 |
 | Modify parameters | Yes | Return modified JSON |
 | Log actions | Yes | Write to file in hook |
-| Async processing | No | Hooks are synchronous |
+| Async processing | Yes | Set `async: true` in hook config (v2.1.0+) |
 
 **Hook JSON payload** (passed via stdin):
 
 ```json
 {
-  "event": "PreToolUse",
-  "tool": "Bash",
-  "params": {
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
     "command": "npm install lodash"
   },
-  "sessionId": "abc123",
+  "session_id": "abc123",
   "cwd": "/path/to/project"
 }
 ```
@@ -1290,6 +1290,8 @@ This convergence suggests that the "less scaffolding, more model" approach scale
 | Hooks Guide | code.claude.com/docs/en/hooks-guide | Hook examples |
 | MCP Docs | code.claude.com/docs/en/mcp | MCP integration |
 | Sandboxing | code.claude.com/docs/en/sandboxing | Security model |
+| llms.txt (index) | code.claude.com/docs/llms.txt | LLM-optimized doc index, ~65 pages |
+| llms-full.txt | code.claude.com/docs/llms-full.txt | Full documentation (~98 KB text) |
 
 ### Tier 2 - Verified Analysis
 

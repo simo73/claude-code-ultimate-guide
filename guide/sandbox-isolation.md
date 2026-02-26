@@ -315,10 +315,6 @@ sudo dnf install bubblewrap socat      # Fedora
 {
   "sandbox": {
     "autoAllowMode": true,
-    "filesystem": {
-      "allowedWritePaths": ["${CWD}"],
-      "deniedReadPaths": ["${HOME}/.ssh", "${HOME}/.aws"]
-    },
     "network": {
       "policy": "deny",
       "allowedDomains": [
@@ -327,6 +323,12 @@ sudo dnf install bubblewrap socat      # Fedora
         "github.com"
       ]
     }
+  },
+  "permissions": {
+    "deny": [
+      "Read(~/.ssh/**)", "Read(~/.aws/**)",
+      "Edit(~/.ssh/**)", "Edit(~/.aws/**)"
+    ]
   }
 }
 ```

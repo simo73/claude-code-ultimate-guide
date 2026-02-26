@@ -467,6 +467,7 @@ External resources (articles, videos, discussions) are evaluated before integrat
 ### Process
 
 1. **Research**: Initial Perplexity search → Save prompt + results in `claudedocs/resource-evaluations/` (private)
+1b. **Cross-reference**: Si ressource liée à Claude Code, vérifier les claims contre `https://code.claude.com/docs/llms-full.txt` (source officielle ~98KB)
 2. **Evaluation**: Systematic scoring (1-5) → Create evaluation file in `docs/resource-evaluations/` (tracked)
 3. **Challenge**: Technical review by agent to ensure objectivity
 4. **Decision**: Integrate (score 3+), mention (score 2), or reject (score 1)
@@ -493,8 +494,9 @@ See full methodology: [`docs/resource-evaluations/README.md`](docs/resource-eval
 ## Quick Lookups
 
 For answering questions about Claude Code:
+0. **Doc officielle Anthropic (LLM-optimized)**: `https://code.claude.com/docs/llms.txt` (index ~65 pages) ou `https://code.claude.com/docs/llms-full.txt` (doc complète ~98KB) pour les faits officiels
 1. Search `machine-readable/reference.yaml` first (has line numbers to full guide)
 2. Use those line numbers to read relevant sections from `guide/ultimate-guide.md`
 3. Check `examples/` for ready-to-use templates
 4. Check `guide/claude-code-releases.md` for recent features/changes
-5. Si info manquante ou incertaine → demander une recherche Perplexity
+5. Si info manquante ou incertaine → demander une recherche Perplexity (communauté, comparaisons, retours)

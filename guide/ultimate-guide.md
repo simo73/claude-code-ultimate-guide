@@ -817,7 +817,7 @@ Claude: [Resumes with Serena's persistent project understanding]
 
 ## 1.4 Permission Modes
 
-Claude Code has three permission modes that control how much autonomy Claude has:
+Claude Code has five permission modes that control how much autonomy Claude has:
 
 ### Default Mode
 
@@ -828,13 +828,13 @@ Claude asks permission before:
 
 This is the safest mode for learning.
 
-### Auto-accept Mode
+### Auto-accept Mode (`acceptEdits`)
 
 ```
 You: Turn on auto-accept for the rest of this session
 ```
 
-Claude will execute changes without asking. Use when you trust the operation and want speed.
+Claude auto-approves file edits but still asks for shell commands. Use when you trust the edits and want speed.
 
 ⚠️ **Warning**: Only use auto-accept for well-defined, reversible operations.
 
@@ -844,12 +844,24 @@ Claude will execute changes without asking. Use when you trust the operation and
 /plan
 ```
 
-Claude can only read and analyze - no modifications allowed. Perfect for:
+Claude can only read and analyze, no modifications allowed. Perfect for:
 - Understanding unfamiliar code
 - Exploring architectural options
 - Safe investigation before changes
 
 Exit with `/execute` when ready to make changes.
+
+### Don't Ask Mode (`dontAsk`)
+
+Auto-denies tools unless pre-approved via `/permissions` or `permissions.allow` rules. Claude never interrupts with permission prompts: if a tool isn't explicitly allowed, it's silently denied.
+
+Use for restrictive workflows where you want tight control over which tools run, without interactive confirmation.
+
+### Bypass Permissions Mode (`bypassPermissions`)
+
+Auto-approves everything, including shell commands. No permission prompts at all.
+
+⚠️ **Warning**: Only use in sandboxed CI/CD environments. Requires `--dangerously-skip-permissions` to enable from CLI. Never use on production systems or with untrusted code.
 
 ## 1.5 Productivity Checklist
 
@@ -1461,7 +1473,7 @@ Add to `~/.claude/settings.json`:
 }
 ```
 
-This displays: `Model: Sonnet 4.5 | Ctx: 0 | ⎇ main | (+0,-0) | Cost: $0.27 | Session: 0m | Ctx(u): 0.0%`
+This displays: `Model: Sonnet 4.6 | Ctx: 0 | ⎇ main | (+0,-0) | Cost: $0.27 | Session: 0m | Ctx(u): 0.0%`
 
 **Option 2: Custom script**
 
@@ -1775,7 +1787,7 @@ Claude Code isn't free - you're using API credits. Understanding costs helps opt
 
 #### Pricing Model (as of February 2026)
 
-Claude Code uses **Claude Sonnet 4.6** by default (as of Feb 2026):
+The default model depends on your subscription: **Max/Team Premium** subscribers get **Opus 4.6** by default, while **Pro/Team Standard** subscribers get **Sonnet 4.6**. If Opus usage hits the plan threshold, it auto-falls back to Sonnet.
 
 | Model | Input (per 1M tokens) | Output (per 1M tokens) | Context Window | Notes |
 |-------|----------------------|------------------------|----------------|-------|
@@ -2425,6 +2437,21 @@ Claude: [Executes the plan]
 ```
 
 **Result**: 76% fewer tokens with better results because the plan is validated before execution.
+
+### Model Aliases
+
+Claude Code supports six model aliases via `/model` (each always resolves to the latest version):
+
+| Alias | Resolves To | Use Case |
+|-------|-------------|----------|
+| `default` | Latest model for your plan tier | Standard usage |
+| `sonnet` | Claude Sonnet 4.6 | Fast, cost-efficient |
+| `opus` | Claude Opus 4.6 | Deep reasoning |
+| `haiku` | Claude Haiku 4.5 | Budget, high-volume |
+| `sonnet[1m]` | Sonnet with 1M context | Large codebases |
+| `opusplan` | Opus (plan) + Sonnet (act) | Hybrid intelligence |
+
+Model can also be set via `claude --model <alias>`, `ANTHROPIC_MODEL` env var, or `"model"` in settings.json. Priority: `/model` > `--model` flag > `ANTHROPIC_MODEL` > settings.json.
 
 ### OpusPlan Mode
 
@@ -4700,7 +4727,7 @@ ln -s ~/.claude/skills ./skills
 
 # 3. Copy settings template (without secrets)
 cp ~/.claude/settings.json ./settings.template.json
-# Manually replace secrets with ${env:VAR_NAME} placeholders
+# Manually replace secrets with ${VAR_NAME} placeholders
 
 # 4. .gitignore for secrets
 cat > .gitignore << EOF
@@ -4817,7 +4844,7 @@ ln -s ~/Dropbox/claude-mcp/settings.json ~/.claude/settings.json
 - Session history (may contain sensitive code)
 
 **Always commit these**:
-- Template files with `${env:VAR_NAME}` placeholders
+- Template files with `${VAR_NAME}` placeholders
 - `.gitignore` to prevent secret leaks
 - Public agents/hooks/skills (if safe to share)
 
@@ -4843,7 +4870,7 @@ ln -sf ~/.claude/commands ./commands
 
 # Restore settings (fill in secrets manually or via .env)
 cp settings.template.json ~/.claude/settings.json
-# Edit and replace ${env:VAR_NAME} with actual values
+# Edit and replace ${VAR_NAME} with actual values
 ```
 
 **From tarball backup**:
@@ -4960,24 +4987,24 @@ Personal permission overrides (gitignored):
 
 ### allowedTools Configuration (Alternative)
 
-For granular control, use `~/.claude.json`:
+For granular control, use `~/.claude/settings.json`:
 
 ```json
 {
   "allowedTools": [
-    "Read(*)",
-    "Grep(*)",
-    "Glob(*)",
-    "WebFetch(*)",
+    "Read",
+    "Grep",
+    "Glob",
+    "WebFetch",
     "TodoRead",
     "TodoWrite",
-    "Task(*)",
-    "Bash(git status:*)",
-    "Bash(git diff:*)",
-    "Bash(git log:*)",
-    "Bash(pnpm typecheck:*)",
-    "Bash(pnpm lint:*)",
-    "Bash(pnpm test:*)"
+    "Task",
+    "Bash(git status *)",
+    "Bash(git diff *)",
+    "Bash(git log *)",
+    "Bash(pnpm typecheck *)",
+    "Bash(pnpm lint *)",
+    "Bash(pnpm test *)"
   ]
 }
 ```
@@ -4985,17 +5012,17 @@ For granular control, use `~/.claude.json`:
 **Pattern Logic**:
 | Pattern | Meaning | Example |
 |---------|---------|---------|
-| `Read(*)` | All reads | Any file |
-| `Bash(git status:*)` | Specific command | `git status` allowed |
-| `Bash(pnpm *:*)` | Command prefix | `pnpm test`, `pnpm build` |
-| `Edit(*)` | All edits | ⚠️ Dangerous |
+| `Read` | All reads | Any file |
+| `Bash(git status *)` | Specific command | `git status` allowed |
+| `Bash(pnpm *)` | Command prefix | `pnpm test`, `pnpm build` |
+| `Edit` | All edits | ⚠️ Dangerous |
 
 **Progressive Permission Levels**:
 
 **Level 1 - Beginner (very restrictive)**:
 ```json
 {
-  "allowedTools": ["Read(*)", "Grep(*)", "Glob(*)"]
+  "allowedTools": ["Read", "Grep", "Glob"]
 }
 ```
 
@@ -5003,8 +5030,8 @@ For granular control, use `~/.claude.json`:
 ```json
 {
   "allowedTools": [
-    "Read(*)", "Grep(*)", "Glob(*)",
-    "Bash(git:*)", "Bash(pnpm:*)",
+    "Read", "Grep", "Glob",
+    "Bash(git *)", "Bash(pnpm *)",
     "TodoRead", "TodoWrite"
   ]
 }
@@ -5014,9 +5041,9 @@ For granular control, use `~/.claude.json`:
 ```json
 {
   "allowedTools": [
-    "Read(*)", "Grep(*)", "Glob(*)", "WebFetch(*)",
-    "Edit(*)", "Write(*)",
-    "Bash(git:*)", "Bash(pnpm:*)", "Bash(npm:*)",
+    "Read", "Grep", "Glob", "WebFetch",
+    "Edit", "Write",
+    "Bash(git *)", "Bash(pnpm *)", "Bash(npm *)",
     "Task(*)", "TodoRead", "TodoWrite"
   ]
 }
@@ -7915,15 +7942,17 @@ Hooks are scripts that run automatically when specific events occur.
 | `Notification` | Claude sends notification | Sound alerts |
 | `SessionStart` | Session begins | Initialization |
 | `SessionEnd` | Session ends | Cleanup |
-| `Stop` | User interrupts | Graceful shutdown |
-| `Setup` | Claude Code starts | Initialization (v2.1.10+) |
+| `Stop` | Claude finishes responding | Post-response actions |
 | `PermissionRequest` | Permission dialog appears | Custom approval logic |
+| `SubagentStart` | Sub-agent starts | Subagent initialization (v2.1.32+) |
 | `SubagentStop` | Sub-agent completes | Subagent cleanup |
 | `TeammateIdle` | Agent team member goes idle | Team coordination (v2.1.32+) |
 | `TaskCompleted` | Task marked as completed | Workflow triggers (v2.1.32+) |
 | `WorktreeCreate` | Agent worktree created | Set up DB branch, install deps (v2.1.50+) |
 | `WorktreeRemove` | Agent worktree torn down | Clean up DB branch, temp credentials (v2.1.50+) |
 | `ConfigChange` | Config file changes during session | Enterprise audit, block unauthorized changes (v2.1.49+) |
+| `PreCompact` | Before context compaction | Save state before compaction (v2.1.50+) |
+| `PostToolUseFailure` | After a tool fails | Error logging, recovery actions |
 
 > **`Stop` and `SubagentStop` — `last_assistant_message` field (v2.1.47+)**: These events now include a `last_assistant_message` field in their JSON input, giving direct access to Claude's final response without parsing transcript files. Useful for orchestration pipelines that need to inspect or log the last output.
 >
@@ -8102,9 +8131,16 @@ gh pr create --title "..." --body "..."
 | Field | Description |
 |-------|-------------|
 | `matcher` | Regex pattern for which tools trigger hook |
-| `type` | Always `"command"` |
-| `command` | Path to hook script |
-| `timeout` | Max execution time (ms) |
+| `type` | Hook type: `"command"`, `"prompt"`, or `"agent"` |
+| `command` | Shell command to run (for `command` type) |
+| `prompt` | Prompt text for LLM evaluation (for `prompt`/`agent` types) |
+| `timeout` | Max execution time in seconds (default: 600s command, 30s prompt, 60s agent) |
+
+**Hook types:**
+
+- **`command`**: Runs a shell command. Receives JSON on stdin, returns JSON on stdout. Most common type.
+- **`prompt`**: Sends prompt + hook input to a Claude model (Haiku by default) for single-turn evaluation. Returns `{ok: true/false, reason: "..."}`. Configure model via `model` field.
+- **`agent`**: Spawns a subagent with tool access (Read, Grep, Glob, etc.) for multi-turn verification. Returns same `{ok: true/false}` format. Up to 50 tool-use turns.
 
 ### Hook Input (stdin JSON)
 
@@ -10464,7 +10500,7 @@ Beyond the official servers listed above, the MCP ecosystem includes **validated
 # Installation
 npm install @microsoft/playwright-mcp
 
-# Configuration (~/.claude/mcp.json)
+# Configuration (~/.claude.json or .mcp.json)
 {
   "mcpServers": {
     "playwright": {
@@ -10485,23 +10521,25 @@ npm install @microsoft/playwright-mcp
 
 ## 8.3 Configuration
 
-### mcp.json Location
+### MCP Configuration Location
 
 ```
-~/.claude/mcp.json      # Global MCP configuration
-/project/.claude/mcp.json  # Project-specific (overrides)
+~/.claude.json          # User-scope MCP config (field "mcpServers")
+.mcp.json               # Project-scope (project root, shareable via VCS)
 ```
+
+> **Note**: Three scopes exist: `local` (default, private to you + current project, in `~/.claude.json`), `project` (shared via `.mcp.json` at project root), and `user` (cross-project, also in `~/.claude.json`). Use `claude mcp add --scope <scope>` to target a specific scope.
 
 ### Example Configuration
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "serena": {
       "command": "npx",
       "args": ["serena-mcp"],
       "env": {
-        "PROJECT_PATH": "${workspaceFolder}"
+        "PROJECT_PATH": "${PROJECT_PATH}"
       }
     },
     "context7": {
@@ -10512,7 +10550,7 @@ npm install @microsoft/playwright-mcp
       "command": "npx",
       "args": ["@modelcontextprotocol/server-postgres"],
       "env": {
-        "DATABASE_URL": "${env:DATABASE_URL}"
+        "DATABASE_URL": "${DATABASE_URL}"
       }
     }
   }
@@ -10532,8 +10570,10 @@ npm install @microsoft/playwright-mcp
 
 | Variable | Expands To |
 |----------|------------|
-| `${workspaceFolder}` | Current project path |
-| `${env:VAR_NAME}` | Environment variable |
+| `${VAR}` | Environment variable value |
+| `${VAR:-default}` | Environment variable with fallback |
+
+> **Warning**: The syntax `${workspaceFolder}` and `${env:VAR_NAME}` are VS Code conventions, not Claude Code. Claude Code uses standard shell-style `${VAR}` and `${VAR:-default}` for environment variable expansion in MCP config.
 
 ### Managing Large MCP Server Sets
 
@@ -10542,10 +10582,10 @@ When you accumulate many MCP servers, enabling them all globally degrades Claude
 **Pattern**: keep a minimal global config (2-3 core servers) and activate project-specific servers via per-project `.mcp.json`.
 
 ```
-# Global (~/.claude/mcp.json) → always loaded
+# User-scope (~/.claude.json "mcpServers") → always loaded
 context7, sequential-thinking
 
-# Per-project (.claude/mcp.json) → only when needed
+# Project-scope (.mcp.json at project root) → only when needed
 postgres        # database project
 playwright      # frontend project
 serena          # large codebase
@@ -10622,7 +10662,7 @@ security find-generic-password -s "github-token" -w
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "github": {
       "command": "bash",
       "args": ["-c", "GITHUB_TOKEN=$(security find-generic-password -s 'github-token' -w) npx @github/mcp-server"],
@@ -10648,9 +10688,9 @@ secret-tool store --label="GitHub Token" service claude key github-token
 export GITHUB_TOKEN=$(secret-tool lookup service claude key github-token)
 npx @github/mcp-server
 
-# mcp.json
+# ~/.claude.json (or .mcp.json)
 {
-  "servers": {
+  "mcpServers": {
     "github": {
       "command": "~/.claude/scripts/mcp-github.sh",
       "args": []
@@ -10701,19 +10741,19 @@ echo ".env" >> ~/.claude/.gitignore
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "github": {
       "command": "npx",
       "args": ["@github/mcp-server"],
       "env": {
-        "GITHUB_TOKEN": "${env:GITHUB_TOKEN}"
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
     },
     "postgres": {
       "command": "npx",
       "args": ["@modelcontextprotocol/server-postgres"],
       "env": {
-        "DATABASE_URL": "${env:DATABASE_URL}"
+        "DATABASE_URL": "${DATABASE_URL}"
       }
     }
   }
@@ -10739,14 +10779,14 @@ direnv allow ~/.claude
 
 ```bash
 # Commit template (no secrets)
-cat > ~/.claude/mcp.json.template << EOF
+cat > ~/.claude/mcp-config.template.json << EOF
 {
-  "servers": {
+  "mcpServers": {
     "github": {
       "command": "npx",
       "args": ["@github/mcp-server"],
       "env": {
-        "GITHUB_TOKEN": "\${env:GITHUB_TOKEN}"
+        "GITHUB_TOKEN": "\${GITHUB_TOKEN}"
       }
     }
   }
@@ -10754,10 +10794,10 @@ cat > ~/.claude/mcp.json.template << EOF
 EOF
 
 # Generate actual config from template + .env
-envsubst < ~/.claude/mcp.json.template > ~/.claude/mcp.json
+envsubst < ~/.claude/mcp-config.template.json > ~/.claude.json
 
 # .gitignore
-mcp.json      # Generated, contains resolved secrets
+.claude.json  # Generated, contains resolved secrets
 .env          # Never commit
 ```
 
@@ -10784,9 +10824,9 @@ vault kv put secret/claude/github token=ghp_your_token_here
 export GITHUB_TOKEN=$(vault kv get -field=token secret/claude/github)
 npx @github/mcp-server
 
-# mcp.json
+# ~/.claude.json (or .mcp.json)
 {
-  "servers": {
+  "mcpServers": {
     "github": {
       "command": "~/.claude/scripts/mcp-github-vault.sh",
       "args": []
@@ -10841,8 +10881,8 @@ NEW_VALUE=$2
 # 1. Update .env file
 sed -i.bak "s|^${SECRET_NAME}=.*|${SECRET_NAME}=${NEW_VALUE}|" ~/.claude/.env
 
-# 2. Regenerate mcp.json from template
-envsubst < ~/.claude/mcp.json.template > ~/.claude/mcp.json
+# 2. Regenerate config from template
+envsubst < ~/.claude/mcp-config.template.json > ~/.claude.json
 
 # 3. Restart MCP servers (if running)
 pkill -f "mcp-server" || true
@@ -10868,7 +10908,7 @@ echo "⚠️  Restart Claude Code to apply changes"
 # Fetch latest secrets from Vault, update .env, restart Claude
 
 vault kv get -format=json secret/claude | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' > ~/.claude/.env
-envsubst < ~/.claude/mcp.json.template > ~/.claude/mcp.json
+envsubst < ~/.claude/mcp-config.template.json > ~/.claude.json
 
 echo "✅ Secrets rotated from Vault"
 ```
@@ -10940,7 +10980,7 @@ claude
 | **Use OS keychain when possible** | Encrypted at rest, OS-level security |
 | **Never commit .env to Git** | One leak = full compromise |
 | **Commit .env.example template** | Team onboarding without secrets |
-| **Use ${env:VAR} in mcp.json** | Separation of config and secrets |
+| **Use ${VAR} in MCP config** | Separation of config and secrets |
 | **Rotate secrets quarterly** | Limit blast radius of old leaks |
 | **Audit .gitignore before push** | Prevent accidental exposure |
 | **Least privilege credentials** | Read-only DB users, scoped API tokens |
@@ -11451,10 +11491,12 @@ MCP servers can dynamically change their tool offerings. A server might pass ini
 ```json
 {
   "permissions": {
-    "disallowedTools": ["mcp__untrusted-server__execute", "mcp__untrusted-server__shell"]
+    "deny": ["mcp__untrusted-server__execute", "mcp__untrusted-server__shell"]
   }
 }
 ```
+
+> **Note**: `disallowedTools` is a root-level key or CLI flag (`--disallowedTools`), not nested under `permissions`. For settings.json, use `permissions.deny` to block tool patterns.
 
 ### Red Flags
 
@@ -11674,7 +11716,12 @@ The `effort` parameter significantly impacts how Claude uses tools:
 - **Opus 4.5**: `effort` works **in parallel** with `budget_tokens`. Both parameters are supported and affect different aspects of the response.
 - **Without thinking enabled**: `effort` still controls text generation and tool calls. It's not a thinking-only parameter.
 
-**CLI usage**: Same as before — Alt+T toggles thinking on/off globally. No per-request effort control in CLI (uses model's default `high`).
+**CLI usage**: Three methods to control effort level in Claude Code:
+1. **`/model` command** with left/right arrow keys to adjust the effort slider (`low`, `medium`, `high`)
+2. **`CLAUDE_CODE_EFFORT_LEVEL`** environment variable (set before launching Claude)
+3. **`effortLevel`** field in settings.json (persistent across sessions)
+
+Alt+T toggles thinking on/off globally (separate from effort level).
 
 #### Controlling Thinking Mode
 
@@ -11682,7 +11729,9 @@ The `effort` parameter significantly impacts how Claude uses tools:
 |--------|----------|----------|-------------|
 | **Alt+T** (Option+T on macOS) | Toggle on/off | Toggle on/off | Current session |
 | **/config** → Thinking mode | Enable/disable globally | Enable/disable globally | Across sessions |
-| **API `effort` parameter** | `low\|medium\|high` | `low\|medium\|high\|max` (`max` = 4.6 only) | Per request |
+| **`/model` slider** (left/right arrows) | `low\|medium\|high` | `low\|medium\|high` | Current session |
+| **`CLAUDE_CODE_EFFORT_LEVEL`** env var | `low\|medium\|high` | `low\|medium\|high` | Shell session |
+| **`effortLevel`** in settings.json | `low\|medium\|high` | `low\|medium\|high` | Permanent |
 | **Ctrl+O** | View thinking blocks | View thinking blocks | Display only |
 
 #### Cost Implications
@@ -16901,6 +16950,19 @@ This guide uses both llms.txt and CLAUDE.md:
 
 **Result**: Agents can discover content via llms.txt, then consult CLAUDE.md for active context.
 
+#### Real-World: Anthropic's Official llms.txt
+
+Anthropic publie deux variantes LLM-optimized pour Claude Code :
+
+| Fichier | URL | Taille | Tokens (approx) | Use case |
+|---------|-----|--------|-----------------|----------|
+| `llms.txt` | `code.claude.com/docs/llms.txt` | ~65 pages | ~15-20K | Index rapide, découverte de sections |
+| `llms-full.txt` | `code.claude.com/docs/llms-full.txt` | ~98 KB | ~25-30K | Fact-checking, doc complète, source de vérité |
+
+**Pattern recommandé** : fetch `llms.txt` d'abord pour identifier la section pertinente, puis fetch la page spécifique (ou `llms-full.txt`) pour les détails. Évite de charger 98 KB quand seules 2 pages sont nécessaires.
+
+Ces URLs sont la source officielle à consulter en priorité quand un claim sur Claude Code semble incertain ou potentiellement obsolète.
+
 #### Specification Resources
 
 - **Official spec**: https://llmstxt.org/
@@ -19155,23 +19217,28 @@ Complete reference for all Claude Code command-line flags.
 | `--json-schema` | JSON Schema for structured output validation | `claude --json-schema '{"type":"object","properties":{"name":{"type":"string"}}}' ` |
 | `--input-format` | Input format (text/stream-json) | `claude --input-format stream-json` |
 | `--replay-user-messages` | Re-emit user messages in stream | `claude --replay-user-messages` |
-| `--allowedTools` | Whitelist specific tools | `claude --allowedTools "Edit,Read,Bash(git:*)"` |
+| `--allowedTools` | Whitelist specific tools | `claude --allowedTools "Edit,Read,Bash(git *)"` |
 | `--disallowedTools` | Blacklist specific tools | `claude --disallowedTools "WebFetch"` |
 | `--mcp-config` | Load MCP servers from JSON file | `claude --mcp-config ./mcp.json` |
 | `--strict-mcp-config` | Only use MCP servers from config | `claude --strict-mcp-config` |
 | `--plugin-dir` | Load plugins from directory (repeatable) | `claude --plugin-dir ~/.claude/plugins` |
 | `--append-system-prompt` | Add to system prompt | `claude --append-system-prompt "Use TypeScript"` |
-| `--permission-mode` | Permission mode (default/auto/plan) | `claude --permission-mode plan` |
+| `--permission-mode` | Permission mode (default/acceptEdits/plan/dontAsk/bypassPermissions) | `claude --permission-mode plan` |
 | `--model` | Model selection | `claude --model sonnet` |
 | `--max-budget-usd` | Maximum API spend limit (with `--print` only) | `claude -p "analyze" --max-budget-usd 5.00` |
+| `--tools` | Enable specific tools for the session | `claude --tools "Edit,Read,Bash"` |
+| `--agent` | Specify agent for session | `claude --agent security-reviewer` |
+| `--system-prompt` | Override system prompt entirely | `claude --system-prompt "You are a reviewer"` |
 | `--add-dir` | Allow tool access to additional directories | `claude --add-dir ../shared ../utils` |
-| `--continue` | Continue last conversation | `claude --continue` |
-| `-r, --resume` | Resume session by ID | `claude --resume abc123` |
+| `--worktree` / `-w` | Run in isolated git worktree | `claude --worktree` |
+| `--continue` | Continue last conversation (in current directory) | `claude --continue` |
+| `-r, --resume` | Resume session by ID or show picker | `claude --resume abc123` |
 | `--dangerously-skip-permissions` | Skip all permission prompts | `claude --dangerously-skip-permissions` |
-| `--debug` | Enable debug mode | `claude --debug` |
+| `--debug` | Enable debug mode (supports categories: `"api,mcp"`) | `claude --debug` |
 | `--verbose` | Verbose output | `claude --verbose` |
-| `--mcp-debug` | Debug MCP server connections | `claude --mcp-debug` |
 | `--version` | Show version | `claude --version` |
+
+> **Note**: This table covers the most commonly used flags. The full CLI reference (~45 flags) is available at [docs.anthropic.com](https://docs.anthropic.com/en/docs/claude-code/cli-reference).
 
 **Common Combinations:**
 
@@ -19220,7 +19287,7 @@ Use this symptom-based guide for rapid issue identification and resolution:
 | "Rate limit exceeded" | API throttling from frequent requests | Wait 2 minutes, use `--model haiku` for simple tasks, or use [cc-copilot-bridge](https://github.com/FlorianBruniaux/cc-copilot-bridge) for flat-rate access | Batch operations, use `/compact`, consider Copilot Pro+ |
 | Claude forgets instructions | Context overflow, CLAUDE.md lost | Create checkpoint, `/clear`, reload CLAUDE.md | Keep CLAUDE.md concise (<500 lines) |
 | MCP server not connecting | Server crashed or config error | `claude mcp list`, check paths, restart server | Test servers after config changes |
-| Permission prompts every time | Tool not in `allowedTools` | Add pattern to `settings.json` allowedTools | Use wildcards: `Bash(git:*)` |
+| Permission prompts every time | Tool not in `allowedTools` | Add pattern to `settings.json` allowedTools | Use wildcards: `Bash(git *)` |
 | Changes not taking effect | Cached configuration | Restart Claude Code session | Use `/exit` before config changes |
 | Session won't resume | Corrupted session file | Start fresh with `/clear` | Exit cleanly with `/exit` or `Ctrl+D` |
 
@@ -20571,7 +20638,7 @@ Quick reference for where Claude Code stores files and configuration.
 | **Claude data directory** | `C:\Users\<username>\.claude\` |
 | **Claude config file** | `C:\Users\<username>\.claude.json` |
 | **Log files** | `%APPDATA%\Claude\logs\` |
-| **MCP config** | `C:\Users\<username>\.claude\mcp.json` |
+| **MCP config** | `C:\Users\<username>\.claude.json` (`mcpServers` field) |
 | **Session data** | `C:\Users\<username>\.claude\local\` |
 | **Downloads/cache** | `C:\Users\<username>\.claude\downloads\` |
 
@@ -20596,7 +20663,7 @@ Get-Content "$env:APPDATA\Claude\logs\mcp*.log" -Wait -Tail 50
 | **Claude data directory** | `~/.claude/` |
 | **Claude config file** | `~/.claude.json` |
 | **Log files** | `~/Library/Logs/Claude/` |
-| **MCP config** | `~/.claude/mcp.json` |
+| **MCP config** | `~/.claude.json` (`mcpServers` field) |
 | **Session data** | `~/.claude/local/` |
 | **Downloads/cache** | `~/.claude/downloads/` |
 
@@ -20623,7 +20690,7 @@ tail -f ~/Library/Logs/Claude/mcp*.log
 | **Claude data directory** | `~/.claude/` |
 | **Claude config file** | `~/.claude.json` |
 | **Log files** | `~/.local/share/claude/logs/` or `~/.cache/claude/logs/` |
-| **MCP config** | `~/.claude/mcp.json` |
+| **MCP config** | `~/.claude.json` (`mcpServers` field) |
 | **Session data** | `~/.claude/local/` |
 | **Downloads/cache** | `~/.claude/downloads/` |
 

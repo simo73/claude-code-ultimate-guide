@@ -126,6 +126,8 @@ claude-code-ultimate-guide/
 ## Related Resources
 
 - Official: https://docs.anthropic.com/en/docs/claude-code
+- Official llms.txt (index): https://code.claude.com/docs/llms.txt
+- Official llms-full.txt (complete): https://code.claude.com/docs/llms-full.txt
 - DeepWiki: https://deepwiki.com/FlorianBruniaux/claude-code-ultimate-guide
 - Inspiration: https://claudelog.com/
 - Whitepapers (FR + EN): https://www.florian.bruniaux.com/guides — 9 focused whitepapers on Claude Code (foundations, prompting, customization, security, architecture, team, privacy, reference, agent teams)
