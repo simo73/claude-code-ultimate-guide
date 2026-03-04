@@ -8,7 +8,7 @@
   <a href="https://github.com/FlorianBruniaux/claude-code-ultimate-guide/stargazers"><img src="https://img.shields.io/github/stars/FlorianBruniaux/claude-code-ultimate-guide?style=for-the-badge" alt="Stars"/></a>
   <a href="./CHANGELOG.md"><img src="https://img.shields.io/badge/Updated-Mar_4,_2026_·_v3.30.1-brightgreen?style=for-the-badge" alt="Last Update"/></a>
   <a href="./quiz/"><img src="https://img.shields.io/badge/Quiz-274_questions-orange?style=for-the-badge" alt="Quiz"/></a>
-  <a href="./examples/"><img src="https://img.shields.io/badge/Templates-175-green?style=for-the-badge" alt="Templates"/></a>
+  <a href="./examples/"><img src="https://img.shields.io/badge/Templates-176-green?style=for-the-badge" alt="Templates"/></a>
   <a href="./guide/security-hardening.md"><img src="https://img.shields.io/badge/🛡️_Threat_DB-24_CVEs_·_655_malicious_skills-red?style=for-the-badge" alt="Threat Database"/></a>
   <a href="./mcp-server/"><img src="https://img.shields.io/badge/MCP_Server-npx_ready-blueviolet?style=for-the-badge" alt="MCP Server"/></a>
 </p>
@@ -52,7 +52,7 @@ Both guides serve different needs. Choose based on your priority.
 | **Security hardening** | Only threat database (24 CVEs) | Basic patterns only |
 | **Test understanding** | 274-question quiz | Not available |
 | **Methodologies** (TDD/SDD/BDD) | Full workflow guides | Not covered |
-| **Copy-paste ready** templates | 175 templates | 200+ templates |
+| **Copy-paste ready** templates | 176 templates | 200+ templates |
 
 ### Ecosystem Positioning
 
@@ -137,7 +137,7 @@ graph LR
     root[📦 Repository<br/>Root]
 
     root --> guide[📖 guide/<br/>20K lines]
-    root --> examples[📋 examples/<br/>175 templates]
+    root --> examples[📋 examples/<br/>176 templates]
     root --> quiz[🧠 quiz/<br/>274 questions]
     root --> tools[🔧 tools/<br/>utils]
     root --> machine[🤖 machine-readable/<br/>AI index]
@@ -168,7 +168,7 @@ graph LR
 │  ├─ mcp-servers-ecosystem.md  Official & community MCP servers
 │  └─ workflows/          Step-by-step guides
 │
-├─ 📋 examples/           175 Production Templates
+├─ 📋 examples/           176 Production Templates
 │  ├─ agents/             9 custom AI personas
 │  ├─ commands/           26 slash commands
 │  ├─ hooks/              31 hooks (bash + PowerShell)
@@ -289,7 +289,7 @@ Complete guides with rationale and examples:
 
 ---
 
-### 📚 175 Annotated Templates
+### 📚 176 Annotated Templates
 
 **Outcome**: Learn patterns, not just configs.
 
@@ -721,7 +721,7 @@ Use this guide critically. Experiment. Share what works for you.
 | **[Claude Code Releases](./guide/claude-code-releases.md)** | Official release history | 10 min |
 
 <details>
-<summary><strong>Examples Library</strong> (175 templates)</summary>
+<summary><strong>Examples Library</strong> (176 templates)</summary>
 
 **Agents** (6): [code-reviewer](./examples/agents/code-reviewer.md), [test-writer](./examples/agents/test-writer.md), [security-auditor](./examples/agents/security-auditor.md), [refactoring-specialist](./examples/agents/refactoring-specialist.md), [output-evaluator](./examples/agents/output-evaluator.md), [devops-sre](./examples/agents/devops-sre.md) ⭐
 

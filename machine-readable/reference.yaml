@@ -166,6 +166,8 @@ deep_dive:
   productivity_rct_echoes: "guide/learning-with-ai.md:926"  # Borg 2025: 30.7% faster (median), ~55.9% habitual users, no maintainability impact downstream
   productivity_maintainability_empirical: "guide/learning-with-ai.md:926"  # Empirical data on "AI code is unmaintainable" claim — blind RCT shows no significant difference
   trust_calibration_maintainability_nuance: "guide/ultimate-guide.md:1097"  # Nuance: defect rates ≠ maintenance burden (Borg et al. 2025)
+  session_naming_template: "examples/claude-md/session-naming.md"
+  session_naming_guide: "guide/ultimate-guide.md:815"
   learning_mode_template: "examples/claude-md/learning-mode.md"
   learn_quiz_command: "examples/commands/learn/quiz.md"
   learn_teach_command: "examples/commands/learn/teach.md"
@@ -259,6 +261,10 @@ deep_dive:
   third_party_ccusage: "https://www.npmjs.com/package/ccusage"
   third_party_ccusage_site: "https://ccusage.com"
   third_party_ccburn: "https://github.com/JuanjoFuchs/ccburn"
+  third_party_straude: "https://straude.com"
+  third_party_straude_npm: "https://www.npmjs.com/package/straude"
+  third_party_straude_guide: "guide/third-party-tools.md:92"
+  third_party_straude_eval: "docs/resource-evaluations/straude-evaluation.md"
   third_party_claude_code_viewer: "https://www.npmjs.com/package/@kimuson/claude-code-viewer"
   third_party_claude_code_config: "https://github.com/joeyism/claude-code-config"
   third_party_aiblueprint: "https://github.com/Melvynx/aiblueprint"

@@ -18,7 +18,7 @@ Annotated templates that teach you **why** patterns work, not just how to config
 | [`commands/`](./commands/) | Slash commands (workflow automation) | 26 |
 | [`hooks/`](./hooks/) | Event-driven security & automation scripts | 31 |
 | [`skills/`](./skills/) | Reusable knowledge modules — [9 on SkillHub](https://skills.palebluedot.live/owner/FlorianBruniaux) | 13 |
-| [`claude-md/`](./claude-md/) | CLAUDE.md configuration profiles | 5 |
+| [`claude-md/`](./claude-md/) | CLAUDE.md configuration profiles | 6 |
 | [`config/`](./config/) | Settings, MCP, git templates | 5 |
 | [`memory/`](./memory/) | CLAUDE.md memory file templates | 2 |
 | [`scripts/`](./scripts/) | Diagnostic & utility scripts | 13 |
@@ -195,7 +195,7 @@ Security-first: 12 security hooks, 8 productivity hooks, 5 automation hooks, 5 m
 | [CLAUDE.md.project-template](./memory/CLAUDE.md.project-template) | Team project memory |
 | [CLAUDE.md.personal-template](./memory/CLAUDE.md.personal-template) | Personal global memory |
 
-### CLAUDE.md Configurations (5)
+### CLAUDE.md Configurations (6)
 
 | File | Purpose |
 |------|---------|
@@ -204,6 +204,7 @@ Security-first: 12 security hooks, 8 productivity hooks, 5 automation hooks, 5 m
 | [product-designer.md](./claude-md/product-designer.md) | Product designer workflow configuration |
 | [tts-enabled.md](./claude-md/tts-enabled.md) | Text-to-speech enabled configuration |
 | [rtk-optimized.md](./claude-md/rtk-optimized.md) | RTK token-optimized configuration |
+| [session-naming.md](./claude-md/session-naming.md) | Auto-rename sessions with descriptive titles for parallel work |
 
 > **See [guide/learning-with-ai.md](../guide/learning-with-ai.md) for learning mode documentation**
 > **See [guide/devops-sre.md](../guide/devops-sre.md) for DevOps/SRE guide**

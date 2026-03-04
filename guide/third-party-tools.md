@@ -89,6 +89,49 @@ A Python TUI for visual token burn-rate tracking. Displays charts showing consum
 
 ---
 
+### Straude
+
+A social dashboard for tracking and sharing Claude Code (and OpenAI Codex) usage stats. Push your daily token consumption and costs to a public leaderboard to track your streak, weekly spend, and global rank.
+
+| Attribute | Details |
+|-----------|---------|
+| **Source** | [npm: straude](https://www.npmjs.com/package/straude) |
+| **Website** | [straude.com](https://straude.com) |
+| **Install** | `npx straude@latest` |
+| **Language** | TypeScript (Node.js 18+) |
+| **Version** | 0.1.9 (active development, created Feb 2026) |
+| **Maintainer** | Community (oscar.hong2015@gmail.com) |
+
+**Key features**:
+
+- `straude` — smart sync: authenticate + push usage in one command
+- `straude push --dry-run` — preview what would be submitted without sending
+- `straude push --days N` — backfill last N days (max 7)
+- `straude status` — streak, weekly spend, token totals, global rank
+- Tracks both Claude Code (`ccusage`) and OpenAI Codex (`@ccusage/codex`)
+
+**What is sent to the Straude server**:
+
+Per day: cost in USD, token counts (input/output/cache creation/cache read), model names used (e.g. `claude-sonnet-4-6`), per-model cost breakdown. Plus: a SHA256 hash of the raw data, a random device UUID, and your machine hostname.
+
+Your source code, API keys, and conversation content are **not** accessed or transmitted.
+
+**Security notes**:
+
+- Auth token stored in `~/.straude/config.json` with `0600` permissions (owner-only)
+- Project is very young (created 2026-02-18, rapid iteration) — no public security audit
+- Machine hostname is sent as `device_name`
+- No published privacy policy as of March 2026
+- Use `--dry-run` to verify what would be submitted before your first push
+
+**When to choose Straude over ccusage/ccburn**:
+
+Straude is the only tool in this list that is **social** — it uploads your stats to a shared platform. If you want a leaderboard, streak tracking, or to benchmark your usage against other developers, Straude is unique. If you want local-only cost visibility, ccusage or ccburn are better fits and carry no data-sharing implications.
+
+> **Security reminder**: Before running any community CLI tool with `npx`, review its npm page and source for red flags. For Straude, the compiled source is readable and consistent with its stated purpose. See the [resource evaluation](../docs/resource-evaluations/straude-evaluation.md) for the full analysis.
+
+---
+
 ### RTK (Rust Token Killer)
 
 A CLI proxy that filters command outputs **before** they reach Claude's context. 446 stars, 38 forks, 700+ upvotes on r/ClaudeAI.

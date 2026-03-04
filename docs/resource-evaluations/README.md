@@ -67,6 +67,7 @@ Les documents de travail bruts (prompts Perplexity, audits clients) restent dans
 | **Master Claude Code Infographic** (Rakesh Gohel / Aakash Gupta) | 2/5 | **2/5** | ❌ Ne pas intégrer (surface-level, erreur Cursor) | [rakesh-gohel-aakash-gupta-master-claude-code.md](./rakesh-gohel-aakash-gupta-master-claude-code.md) |
 | **Snyk ToxicSkills** (Supply Chain Audit) | 4/5 | **4/5** | ✅ Intégré (security-hardening.md §1.1, §1.2, §1.5) | [snyk-toxicskills-evaluation.md](./snyk-toxicskills-evaluation.md) |
 | **System Prompts Opus 4.6** (Official Update) | 2/5 | **2/5** | ⚠️ Watch only (2nd eval, same URL, already covered) | [system-prompts-opus-4-6-update.md](./system-prompts-opus-4-6-update.md) |
+| **Straude** (Social usage tracker) | 3/5 | **3/5** | ✅ Intégré (third-party-tools.md, analyse sécurité) | [straude-evaluation.md](./straude-evaluation.md) |
 | **qmd Token Savings** (Simone Ruggiero, Medium) | 2/5 | **2/5** | ❌ Ne pas intégrer (redundant avec grepai, claims non vérifiables) | [2026-02-14-simone-ruggiero-qmd-token-savings-medium.md](./2026-02-14-simone-ruggiero-qmd-token-savings-medium.md) |
 | **Rippletide** (AI Reliability Platform) | 2/5 | **2/5** | ⚠️ Watch only (MCP server tiers, claims non vérifiables, pas de traction) | [072-rippletide-ai-reliability-platform.md](./072-rippletide-ai-reliability-platform.md) |
 

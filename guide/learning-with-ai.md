@@ -12,7 +12,7 @@ tags: [guide, workflows]
 >
 > **Reading time**: ~15 minutes
 >
-> **Last updated**: January 2026
+> **Last updated**: March 2026
 
 ---
 
@@ -29,9 +29,10 @@ tags: [guide, workflows]
 9. [Optimizing Your Flow (Pattern: Augmented)](#optimizing-your-flow)
 10. [Case Study: Hybrid Learning Principles](#case-study-hybrid-learning-principles)
 11. [30-Day Progression Plan](#30-day-progression-plan)
-12. [Red Flags Checklist](#red-flags-checklist)
-13. [Sources & Research](#sources--research)
-14. [See Also](#see-also)
+12. [For Tech Leads & Engineering Managers](#for-tech-leads--engineering-managers)
+13. [Red Flags Checklist](#red-flags-checklist)
+14. [Sources & Research](#sources--research)
+15. [See Also](#see-also)
 
 ---
 
@@ -149,6 +150,8 @@ The pattern: **AI excels at well-defined, repeatable tasks**. It struggles with 
 - Skipping code review because "AI wrote it"
 
 The difference isn't the tool — it's the organizational discipline around it.
+
+> **For team leads**: If you're responsible for structuring this — onboarding, policies, growth measurement — jump to [§12 For Tech Leads & Engineering Managers](#for-tech-leads--engineering-managers).
 
 **On maintainability fear**: The concern that AI-generated code creates unmaintainable codebases is not empirically supported — downstream developers show no significant difference in evolution time or code quality (Borg et al., 2025, n=151). The real risks are skill atrophy and over-delegation, not inherent quality degradation for the next developer. ([arXiv:2507.00788](https://arxiv.org/abs/2507.00788))
 
@@ -872,6 +875,137 @@ A concrete path from wherever you are to augmented developer.
 
 ---
 
+## For Tech Leads & Engineering Managers
+
+> **Audience**: Engineering managers, tech leads, senior developers responsible for junior mentoring.
+>
+> **Problem**: The rest of this guide addresses individual developers. This section addresses the people responsible for creating the conditions where good habits form — or don't.
+
+The UVAL protocol solves the individual problem. The organizational problem is different: how do you create conditions where juniors *want to* think before they prompt, where quality isn't traded for velocity, and where AI-generated debt doesn't accumulate silently at team scale?
+
+---
+
+### The Onboarding Imperative
+
+AI access without structured training produces poor results. A 2025 Create Future study found junior developers with no AI training achieved only 14-42% time savings on key tasks. With brief structured training, that jumped to 35-65%. The tool doesn't teach itself.
+
+**Structured onboarding beats "here's your license":**
+
+| Week | Focus | Avoid |
+|------|-------|-------|
+| 1 | Codebase tour without AI — baseline assessment | Granting Copilot access on day one |
+| 2 | First features manually, AI as reviewer only | AI as generator before fundamentals are visible |
+| 3 | UVAL protocol introduction + supervised pair sessions | Solo AI usage without check-ins |
+| 4+ | Full AI usage with weekly understanding check-ins | Unmonitored velocity as success metric |
+
+Week 1 without AI isn't a punishment. It's calibration. You need to see what they actually know before AI masks the gaps. A junior who struggles week 1 needs different mentoring than one who ships confidently — and you can't distinguish them if they both use AI from day one.
+
+---
+
+### Measuring What Actually Matters
+
+Velocity is a lagging indicator. It shows nothing about the skills gap forming underneath.
+
+**Metrics that reveal real growth:**
+
+| Metric | How to Measure | Red Flag |
+|--------|---------------|----------|
+| Can explain code in review | Ask "walk me through your approach" | "The AI suggested it" |
+| Debugs independently | Time to resolve self-reported blockers | Always needs AI to debug |
+| Predicts outcomes | Ask "what will this do?" before running | Can't answer without testing |
+| Proposes alternatives | In design discussions | Always defers to AI output |
+| Notices when AI is wrong | Review comment quality | Never catches AI errors |
+
+**Weekly growth question** (5 minutes, any format):
+
+> "What's one thing you understood deeply this week — not just shipped?"
+
+If they struggle to answer two weeks in a row, that's your signal to slow down.
+
+---
+
+### Scalable Mentoring Models
+
+The 1:1 senior/junior compagnonnage model doesn't scale past teams of 5-10. These three approaches do:
+
+**1. Pair programming rotations (2-hour slots)**
+
+Two juniors work together with AI. The constraint: neither can accept AI code they can't explain to their partner. Disagreements on the *why* are escalated to a senior. Cost: 2h/week per junior, minimal senior time.
+
+**2. Architecture "hot seat" (15 min/week)**
+
+Any junior can request a 15-minute slot to explain an architectural decision they made. Senior gives one piece of feedback. No code review — just the *why* behind the choice. Scales to N juniors with O(N×15min) senior time, and forces juniors to develop architectural reasoning rather than just copy AI solutions.
+
+**3. Collective CLAUDE.md ownership**
+
+Juniors propose additions to the team `CLAUDE.md`. Proposals must be based on something that burned them or saved them in practice. Seniors review and accept or reject with a reason. This forces reflection, distributes knowledge horizontally, and builds shared ownership of the team's AI usage standards.
+
+---
+
+### Team-Level AI Policy (CLAUDE.md for Teams)
+
+Individual `CLAUDE.md` configuration (§6) is for one developer. Team-level policy goes in the root `CLAUDE.md` of your shared repo. Keep it short enough that people actually read it:
+
+```markdown
+## Team AI Usage Policy
+
+### Required before using AI on a feature
+- Write the function signature yourself
+- Write at least one test case before asking AI to implement
+
+### Required after AI generates code
+- All AI-generated code undergoes the same code review as human code
+- Reviewer asks: "Can you explain this section?" for junior PRs — not optional
+
+### Prohibited patterns
+- Accepting AI changes without reading the diff
+- AI-generated code in security-critical paths without explicit senior sign-off
+- Using "AI wrote it" as explanation for any architectural decision in a PR
+```
+
+Start minimal. Add rules only when a pattern becomes a problem. A six-page policy nobody reads is worse than a three-rule policy that shapes behavior.
+
+---
+
+### Warning Signs at Team Level
+
+| Pattern | What It Means | Response |
+|---------|---------------|----------|
+| PRs merged faster each week, quality dropping | Probably skipping review | Add mandatory "explain this" checklist for junior PRs |
+| Juniors never ask architectural questions | Over-delegating thinking to AI | Architecture hot seat (see above) |
+| Bugs consistently blamed on "AI-generated code" | No code ownership | Review acceptance policy — who's responsible for what they ship? |
+| Senior devs increasingly vocal about code quality | Debt accumulating silently | Slow down — introduce "explain this" gates before merge |
+| Same fundamental question asked every sprint | Not retaining, just re-prompting | Require learning log, review at 1:1s |
+| Junior velocity rises but interview performance falls | The Shen & Tamkin effect at team scale | Reset with week of no-AI exercises on known fundamentals |
+
+---
+
+### Quick Checklist
+
+```
+Onboarding
+☐ Week 1: no AI, baseline skills visible before tooling provided
+☐ Structured AI training included (not just tool access)
+☐ UVAL protocol introduced by week 3
+
+Ongoing
+☐ Code reviews include "explain this" for junior PRs
+☐ Weekly growth question asked (not just velocity reviewed)
+☐ Architecture hot seat or equivalent ritual active
+
+Team Policy
+☐ CLAUDE.md with AI usage guidelines exists in repo
+☐ Prohibited patterns documented and known
+☐ Someone owns updating the policy as patterns evolve
+
+Warning Signs
+☐ Velocity tracked separately from understanding signals
+☐ Debt accumulation monitored (not just feature throughput)
+☐ Juniors can explain code they shipped last sprint
+```
+
+---
+
 ## Red Flags Checklist
 
 Warning signs you're becoming dependent, and what to do:
@@ -927,6 +1061,13 @@ Sources for [§3 The Reality of AI Productivity](#the-reality-of-ai-productivity
 - **METR Experienced Developer RCT (2025)** — [arXiv:2507.09089](https://arxiv.org/abs/2507.09089) — Randomized controlled trial (16 experienced devs, 246 issues, repos 1M+ lines): AI tools made developers 19% slower on familiar codebases, despite perceiving themselves 20% faster (39-point perception gap). Strongest evidence for skill atrophy risk in experienced developers.
 - **Borg et al. "Echoes of AI" RCT (2025)** — [arXiv:2507.00788](https://arxiv.org/abs/2507.00788) — 2-phase blind RCT (151 participants, 95% professional developers): AI users 30.7% faster (median), habitual users ~55.9% faster. Phase 2: downstream developers evolving AI-generated code showed no significant difference in evolution time or code quality vs. human-generated code. First RCT to explicitly target maintainability of AI-assisted code. Co-authored by Dave Farley ("Continuous Delivery"). Note: arXiv preprint (v2 Dec 2025), not yet published in peer-reviewed proceedings.
 - **DORA/Google DevOps Research (2024)** — AI tool adoption impact on team performance
+
+### Team & Organizational Research
+
+- **Create Future: AI Training Impact on Junior Developers (2025)** — Structured AI training raises junior time savings from 14-42% (untrained) to 35-65% (trained) on key tasks. Source for [§12 Onboarding Imperative](#the-onboarding-imperative).
+- **Stanford Digital Economy Study (2025)** — Software developer employment for ages 22-25 declined ~20% by July 2025. Context for the urgency of structured junior development. [understandingai.org analysis](https://www.understandingai.org/p/new-evidence-strongly-suggest-ai)
+- **LeadDev: Tech CEOs reckon with AI impact on junior developers (2025)** — [leaddev.com](https://leaddev.com/leadership/tech-ceos-reckon-with-impact-junior-developers) — Organizational perspectives from engineering leaders on structuring junior growth in AI-heavy teams.
+- **Stack Overflow: AI vs Gen Z (2025)** — [stackoverflow.blog](https://stackoverflow.blog/2025/12/26/ai-vs-gen-z/) — Career pathway shifts for junior developers with AI adoption data by experience level.
 
 ### Practitioner Perspectives
 
