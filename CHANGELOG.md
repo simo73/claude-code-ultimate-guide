@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Documentation
+
+- **Claude Code Releases tracking**: Updated to v2.1.69 (from v2.1.66)
+  - v2.1.69: InstructionsLoaded hook, 4 security fixes (nested skills/symlink bypass/trust dialog/sandbox), 15+ memory leak fixes, Voice STT 20 languages, ${CLAUDE_SKILL_DIR}, /reload-plugins
+  - v2.1.68: ultrathink keyword re-introduced, Opus 4.6 medium effort default, Opus 4/4.1 removed from first-party API
+
+
+### Added
+
+- **OpenClaw security hardening — documentation personnelle (boldguy/obsidian)** — 4 fichiers créés après audit de sécurité (score 5/10 → objectif 8+/10). (1) `securisation-openclaw.md` : guide complet 5 niveaux — gateway bind loopback + token 32 chars, exec allowlist + filesystem denied paths, memory-lancedb reconfiguré avec Ollama local (nomic-embed-text, `dimensions: 768` obligatoire car `config.ts:66-72` throw pour modèle non-OpenAI sans ce champ), Cloudflare Access Zero Trust sur `webhook.bruniaux.com`, DM Policy iMessage (pairing ou allowlist), docker-compose hardened. (2) `checklist-openclaw.md` : 5 sections à cocher (pré-install, réseau, sandbox, mémoire/données, channels) + monitoring mensuel. (3) `scripts/verify-openclaw-security.sh` : script bash 8 checks automatisés (port binding, config JSON, Ollama, connexions OpenAI actives, scan injection sessions, audit built-in, FileVault). (4) `rapport-audit-openclaw.md` : section Addendum avec findings complémentaires (Ollama local support vérifié dans `config.ts:10,147`, guide 3-tier communauté, DM Policy modes). Point clé de l'audit : `memory-lancedb` envoie les embeddings vers OpenAI par défaut — reconfigurer avec `baseUrl: "http://localhost:11434/v1"` + `dimensions: 768` pour rester 100% local.
+
 ### Fixed
 
 - **Remote Control §9.22 — bugs iOS documentés et workarounds** (`guide/ultimate-guide.md:20075`) — troubleshooting enrichi suite à tests terrain (iPhone, mars 2026). Bug confirmé : scan QR code ouvre l'app Claude mais la session n'apparaît pas dans la liste (Research Preview, reproductible sur iOS, documenté par MacStories). Deux workarounds fiables ajoutés : (1) `claude.ai/code` dans Safari — session visible directement, (2) URL copiée depuis le terminal et collée dans Safari. Note explicative ajoutée dans la table de troubleshooting avec référence MacStories.

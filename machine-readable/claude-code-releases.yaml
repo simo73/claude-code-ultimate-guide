@@ -3,8 +3,8 @@
 # Purpose: Track Claude Code product releases for documentation sync
 # Maintained: Manual updates when new releases are announced
 
-latest: "2.1.66"
-updated: "2026-03-04"
+latest: "2.1.69"
+updated: "2026-03-05"
 
 # ════════════════════════════════════════════════════════════════
 # RELEASES (newest first, condensed highlights only)
@@ -14,6 +14,25 @@ releases:
   # ─────────────────────────────────────────────────────────────
   # 2.1.x Series (January-March 2026)
   # ─────────────────────────────────────────────────────────────
+
+  - version: "2.1.69"
+    date: "2026-03-04"
+    highlights:
+      - "⭐ Security: fixed nested skills loading from node_modules, symlink bypass outside workdir, trust dialog silently enabling all servers, sandbox not blocking non-allowed domains"
+      - "⭐ Hooks: new InstructionsLoaded event (CLAUDE.md/.rules files) + agent_id, agent_type, worktree fields added to all hook events"
+      - "${CLAUDE_SKILL_DIR} variable for skills to reference their own directory + /reload-plugins command (no restart needed)"
+      - "Voice STT expanded to 20 languages (+10: Russian, Polish, Turkish, Dutch, Ukrainian, Greek, Czech, Danish, Swedish, Norwegian)"
+      - "15+ memory leak fixes; ~16MB baseline reduction; faster startup (worktree, macOS, MCP); improved MCP binary content (PDFs/Office saved to disk)"
+      - "Sonnet 4.5 users on Pro/Max/Team auto-migrated to Sonnet 4.6"
+    breaking: []
+
+  - version: "2.1.68"
+    date: "2026-03-04"
+    highlights:
+      - "Opus 4.6 now defaults to medium effort for Max and Team subscribers"
+      - "Re-introduced 'ultrathink' keyword to enable high effort for the next turn"
+    breaking:
+      - "Opus 4 and Opus 4.1 removed from Claude Code first-party API — auto-migrated to Opus 4.6"
 
   - version: "2.1.66"
     date: "2026-03-04"
@@ -707,8 +726,11 @@ breaking_summary:
     - "Heredoc delimiter command smuggling prevention (v2.1.38)"
   installation:
     - "npm installations deprecated - use native installer (v2.1.15)"
+  models:
+    - "Opus 4 and Opus 4.1 removed from Claude Code first-party API — auto-migrated to Opus 4.6 (v2.1.68)"
   behavior:
     - "ultrathink/think keywords now cosmetic only — thinking default with Opus 4.5 (v2.0.67)"
+    - "ultrathink keyword re-introduced — now enables high effort for next turn (v2.1.68)"
   syntax:
     - "Indexed argument syntax changed: $ARGUMENTS.0 → $ARGUMENTS[0] (v2.1.19)"
 
@@ -716,6 +738,8 @@ breaking_summary:
 # MILESTONE FEATURES (quick reference)
 # ════════════════════════════════════════════════════════════════
 milestones:
+  "2.1.69": "InstructionsLoaded hook, ${CLAUDE_SKILL_DIR}, 4 security fixes, 15+ memory fixes, Voice STT 20 languages"
+  "2.1.68": "ultrathink re-introduced, Opus 4.6 medium effort default, Opus 4/4.1 removed"
   "2.1.63": "HTTP hooks, worktree config sharing, /simplify + /batch bundled commands"
   "2.1.36": "Fast mode for Opus 4.6"
   "2.1.32": "Opus 4.6, Agent teams preview, Automatic memory"

@@ -10,13 +10,13 @@ tags: [reference, release]
 > **Full details**: [github.com/anthropics/claude-code/CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 > **Machine-readable**: [claude-code-releases.yaml](../machine-readable/claude-code-releases.yaml)
 
-**Latest**: v2.1.66 | **Updated**: 2026-03-04
+**Latest**: v2.1.69 | **Updated**: 2026-03-05
 
 ---
 
 ## Quick Jump
 
-- [2.1.x Series (January-March 2026)](#21x-series-january-march-2026) — Worktree isolation, background agents, ConfigChange hook, Fast mode Opus 4.6, 1M context, claude.ai MCP connectors, remote-control, auto-memory, /copy command, HTTP hooks, worktree config sharing
+- [2.1.x Series (January-March 2026)](#21x-series-january-march-2026) — Worktree isolation, background agents, ConfigChange hook, Fast mode Opus 4.6, 1M context, claude.ai MCP connectors, remote-control, auto-memory, /copy command, HTTP hooks, worktree config sharing, ultrathink re-introduced, InstructionsLoaded hook, 4 security fixes
 - [2.0.x Series (Nov 2025 - Jan 2026)](#20x-series-november-2025---january-2026) — Opus 4.5, Claude in Chrome, Background agents
 - [Breaking Changes Summary](#breaking-changes-summary)
 - [Milestone Features](#milestone-features)
@@ -24,6 +24,38 @@ tags: [reference, release]
 ---
 
 ## 2.1.x Series (January-March 2026)
+
+### v2.1.69 (2026-03-04)
+
+- **Security**: Fixed nested skill discovery loading skills from gitignored directories like `node_modules` — critical security fix
+- **Security**: Fixed symlink bypass allowing writes outside working directory in `acceptEdits` mode
+- **Security**: Fixed trust dialog silently enabling all `.mcp.json` servers on first run (per-server approval now required)
+- **Security**: Fixed sandbox not blocking non-allowed domains when `allowManagedDomainsOnly` is enabled
+- **New**: `InstructionsLoaded` hook event fires when CLAUDE.md or `.claude/rules/*.md` files are loaded into context
+- **New**: `agent_id`, `agent_type`, `worktree` fields added to all hook events (subagent tracking, worktree metadata)
+- **New**: `${CLAUDE_SKILL_DIR}` variable for skills to reference their own installation directory in SKILL.md content
+- **New**: `/reload-plugins` command to activate pending plugin changes without restarting Claude Code
+- **New**: Voice STT expanded to 20 languages (+10: Russian, Polish, Turkish, Dutch, Ukrainian, Greek, Czech, Danish, Swedish, Norwegian)
+- **New**: `sandbox.enableWeakerNetworkIsolation` setting (macOS) for Go tools (gh, gcloud, terraform) behind MITM proxy
+- **New**: `includeGitInstructions` setting (and `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS` env var) to remove built-in commit/PR instructions from system prompt
+- **New**: `oauth.authServerMetadataUrl` config option for MCP servers with custom OAuth discovery
+- **New**: `pluginTrustMessage` in managed settings for organization-specific plugin trust context
+- **New**: Optional `--name` argument for `/remote-control` to set a custom session title visible in claude.ai/code
+- **Changed**: Sonnet 4.5 users on Pro/Max/Team auto-migrated to Sonnet 4.6
+- **Changed**: `/resume` picker now shows most recent prompt instead of first one
+- **Fixed**: 15+ memory leaks — React Compiler memoCache, REPL render scopes (~35MB over 1000 turns), teammate history pinning, hook event accumulation
+- **Fixed**: ~16MB baseline memory reduction (deferred Yoga WASM preloading)
+- **Fixed**: MCP binary content (PDFs, Office docs, audio) now saved to disk with correct extension instead of raw base64 in context
+- **Fixed**: Startup performance — skills/plugins loading, worktree git subprocess, macOS keychain, managed settings
+- **Fixed**: Escape not interrupting running turn when input box has draft text
+- **Fixed**: Duplicate CLAUDE.md, slash commands, agents, and rules when running from nested worktree
+- **Fixed**: macOS keychain corruption with multiple OAuth MCP servers (stdin buffer overflow)
+
+### v2.1.68 (2026-03-04)
+
+- **Changed**: Opus 4.6 now defaults to medium effort for Max and Team subscribers (sweet spot between speed and thoroughness)
+- **New**: Re-introduced `ultrathink` keyword to enable high effort for the next turn specifically
+- **Breaking**: Opus 4 and Opus 4.1 removed from Claude Code on first-party API — users auto-migrated to Opus 4.6
 
 ### v2.1.66 (2026-03-04)
 
@@ -675,6 +707,9 @@ tags: [reference, release]
 
 | Version | Key Features |
 |---------|--------------|
+| **v2.1.69** | InstructionsLoaded hook, 4 security fixes, 15+ memory fixes, Voice STT 20 languages |
+| **v2.1.68** | ultrathink re-introduced, Opus 4.6 medium effort default, Opus 4/4.1 removed |
+| **v2.1.63** | HTTP hooks, worktree config sharing, /simplify + /batch bundled commands |
 | **v2.1.32** | Opus 4.6, Agent teams preview, Automatic memory |
 | **v2.1.18** | Customizable keyboard shortcuts with /keybindings |
 | **v2.1.16** | New task management system with dependency tracking |
@@ -700,4 +735,4 @@ tags: [reference, release]
 
 ---
 
-*Last updated: 2026-02-13 | [Back to main guide](./ultimate-guide.md)*
+*Last updated: 2026-03-05 | [Back to main guide](./ultimate-guide.md)*
