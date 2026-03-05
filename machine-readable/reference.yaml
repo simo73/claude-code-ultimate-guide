@@ -877,6 +877,12 @@ deep_dive:
   ai_ecosystem_voice_to_text: "guide/ai-ecosystem.md:1066"
   ai_ecosystem_alternative_providers: "guide/ai-ecosystem.md:2639"
   voice_refine_skill: "examples/skills/voice-refine/SKILL.md"
+  # PR Triage Skill (added 2026-03-05)
+  pr_triage_skill: "examples/skills/pr-triage/SKILL.md"
+  pr_triage_template: "examples/skills/pr-triage/templates/review-comment.md"
+  pr_triage_phases: "3 (audit + deep review + validated comments)"
+  pr_triage_when: "5+ open PRs, periodic backlog triage, post-sprint cleanup"
+  pr_triage_vs_review_pr: "pr-triage = backlog N PRs | review-pr = single PR focus"
   # Cowork documentation (v1.0 - migrated to dedicated repo)
   cowork_reference: "machine-readable/cowork-reference.yaml"  # Dedicated YAML index (kept local)
   cowork_hub: "https://github.com/FlorianBruniaux/claude-cowork-guide/blob/main/README.md"

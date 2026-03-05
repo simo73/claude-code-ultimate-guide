@@ -17,7 +17,7 @@ Annotated templates that teach you **why** patterns work, not just how to config
 | [`agents/`](./agents/) | Custom AI personas for specialized tasks | 9 |
 | [`commands/`](./commands/) | Slash commands (workflow automation) | 26 |
 | [`hooks/`](./hooks/) | Event-driven security & automation scripts | 31 |
-| [`skills/`](./skills/) | Reusable knowledge modules — [9 on SkillHub](https://skills.palebluedot.live/owner/FlorianBruniaux) | 13 |
+| [`skills/`](./skills/) | Reusable knowledge modules — [9 on SkillHub](https://skills.palebluedot.live/owner/FlorianBruniaux) | 14 |
 | [`claude-md/`](./claude-md/) | CLAUDE.md configuration profiles | 6 |
 | [`config/`](./config/) | Settings, MCP, git templates | 5 |
 | [`memory/`](./memory/) | CLAUDE.md memory file templates | 2 |
@@ -67,7 +67,7 @@ Annotated templates that teach you **why** patterns work, not just how to config
 | [implementer.md](./agents/implementer.md) | Mechanical execution — bounded scope | Haiku |
 | [architecture-reviewer.md](./agents/architecture-reviewer.md) | Architecture & design review — read-only | Opus |
 
-### Skills (13) — [9 on SkillHub](https://skills.palebluedot.live/owner/FlorianBruniaux)
+### Skills (14) — [9 on SkillHub](https://skills.palebluedot.live/owner/FlorianBruniaux)
 
 | File | Purpose |
 |------|---------|
@@ -84,6 +84,7 @@ Annotated templates that teach you **why** patterns work, not just how to config
 | [ccboard/](./skills/ccboard/) | Comprehensive TUI/Web dashboard for Claude Code monitoring |
 | [guide-recap/](./skills/guide-recap/) | Transform CHANGELOG entries into social content (LinkedIn, Twitter/X, Slack) |
 | [release-notes-generator/](./skills/release-notes-generator/) | Generate release notes in 3 formats from git commits |
+| [pr-triage/](./skills/pr-triage/) | 3-phase PR backlog management (audit, deep review, validated comments) |
 
 ### Commands (26)
 

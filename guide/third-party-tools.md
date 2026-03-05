@@ -404,6 +404,55 @@ This section covers tools for running **multiple Claude Code instances in parall
 
 ---
 
+## External Orchestration Frameworks
+
+> **Architectural distinction**: The tools above (Gas Town, multiclaude) run multiple Claude Code instances side by side. External orchestration frameworks go further — they replace or augment Claude Code's internal orchestration layer with their own runtime, adding swarm coordination, persistent memory, and specialized agent pools on top. Use native Claude Code capabilities (Task tool, sub-agents) first; reach for these frameworks when you've exhausted them.
+
+### Ruflo (formerly claude-flow)
+
+**GitHub**: [github.com/ruvnet/ruflo](https://github.com/ruvnet/ruflo) — 18.9k stars (as of March 2026)
+**npm**: `claude-flow` | **License**: MIT
+
+The most adopted external orchestration framework for Claude Code. Transforms it into a multi-agent platform with hierarchical swarms (queen + workers), specialized agent pools (60+ agents: coders, testers, reviewers, architects...), and persistent memory via SQLite.
+
+**Core features**:
+- Q-Learning router directing tasks to the right agent based on past patterns
+- 42+ built-in skills, 17 hooks integrating natively with Claude Code
+- MCP server support for tool extension
+- SQLite-backed session persistence with cross-agent memory sharing
+- Non-interactive CI/CD mode
+
+**Install** (inspect source before running):
+```bash
+npx ruflo@latest init --wizard
+# Do NOT use the curl|bash variant — it pulls from the old repo name (claude-flow) and bypasses package manager security
+```
+
+> **Note on claims**: The project publishes performance metrics (SWE-Bench scores, speed multipliers) without published methodology. Treat as unverified until independently benchmarked.
+
+> **Note on maturity**: Rebranded from claude-flow in early 2026. The transition is ongoing — verify npm package name and repo continuity before adopting in production.
+
+**When to use**: When Claude Code's native Task tool and sub-agents are insufficient for your use case — typically complex multi-step pipelines requiring persistent state across many sessions, or workflows needing true parallel agent coordination beyond what `--dangerously-skip-permissions` + tmux achieves.
+
+---
+
+### Athena Flow
+
+**GitHub**: [github.com/lespaceman/athena-flow](https://github.com/lespaceman/athena-flow) | **License**: MIT (claimed)
+**Status**: Watch — published March 2026, not yet audited
+
+A different architectural approach: instead of augmenting Claude Code's agent layer, Athena Flow sits at the **hooks layer**. It intercepts hook events via Unix Domain Socket (NDJSON), routes them through a persistent Node.js runtime, and provides a TUI for real-time observability and workflow control.
+
+```
+Claude Code → hook-forwarder → Unix Domain Socket → Athena Flow runtime → TUI
+```
+
+First shipped workflow: autonomous E2E test builder (Playwright CI-ready output). Roadmap: visual regression, API testing, Codex support.
+
+**Not recommended yet** — source audit pending, project too new to assess stability. Revisit in 4-6 weeks.
+
+---
+
 ## Plugin Ecosystem
 
 Claude Code's plugin system supports community-built extensions. For detailed documentation:

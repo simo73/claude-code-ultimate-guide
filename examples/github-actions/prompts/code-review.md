@@ -39,6 +39,22 @@ For any file that looks non-trivial, use `Read` to see the full implementation c
 
 ---
 
+## Step 1b — Load Stack-Specific Skills (Optional)
+
+If your project has skill guides in `.claude/skills/`, load the relevant ones based on what the diff touches. Run `Read` on matching paths if they exist:
+
+| If the diff contains... | Load this guide |
+|------------------------|-----------------|
+| `auth`, `session`, `token`, `password` | `.claude/skills/security-guardian/authentication/` |
+| `sql`, `query`, `prisma`, `db` | `.claude/skills/postgres-*/SKILL.md` or your DB guide |
+| `input`, `form`, `upload`, `file` | `.claude/skills/security-guardian/input-validation/` |
+| `api`, `endpoint`, `route`, `middleware` | Your API conventions doc |
+| `payment`, `stripe`, `billing` | Your payment integration guide |
+
+Skip this step entirely if no matching skills exist or the diff is small.
+
+---
+
 ## Step 2 — Analyze Changes
 
 Review each changed file through these lenses:
