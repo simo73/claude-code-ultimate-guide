@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.32.0] - 2026-03-06
+
+### Added
+
+- **Plan-Validate-Execute Pipeline** (`guide/workflows/plan-pipeline.md`) — nouveau workflow complet en 3 commandes pour les équipes AI-first : `/plan-start` (5 phases : analyse PRD, design, décisions techniques, équipe de recherche dynamique, métriques), `/plan-validate` (2 layers : checks structurels inline + agents spécialistes déclenchés par triggers), `/plan-execute` (worktree isolé, TDD scaffolding, exécution parallèle par niveaux, quality gate avec smoke test, création et merge de PR, cleanup). Inclut : philosophie "non-prescriptif" (dire quoi, jamais comment), first principles "No Bandaids, No Workarounds" (state-of-the-art toujours, build time irrelevant, zéro workaround), boucle d'apprentissage ADR (Watching → Emerging → Confirmed → promotion CLAUDE.md), discipline CLAUDE.md (limite 120 lignes, stratégie de pointeurs vers sous-fichiers, chargement dynamique), gestion du contexte (`/clear` entre chaque commande). Profil de coût : $2-10 pour une feature Tier 2 typique avec compounding sur le temps.
+
+- **`/plan-start` command** (`examples/commands/plan-start.md`) — commande slash en 5 phases avec pool d'agents dynamique (12 rôles, sélection par triggers). Inclut : analyse PRD interactive avec 3 buckets (missing/ambiguous/compliance), analyse design (inventory écrans, states catalog, specs animation, accessibilité ARIA), analyse technique avec résolution automatique des décisions confirmées par ADR, assessment de scope (Tier 0 Solo → Tier 4 Full Spectrum), recherche parallèle multi-agents monitorée via TaskOutput, synthèse par `planning-coordinator`, commit plan + ADRs + métriques. Auto-transition vers `/plan-validate` si aucune ambiguïté.
+
+- **`/plan-validate` command** (`examples/commands/plan-validate.md`) — validation indépendante en 2 layers. Layer 1 structurel inline (format, dépendances, existence des fichiers, cohérence ADR, compliance CLAUDE.md). Layer 2 spécialistes déclenchés par triggers (security-reviewer Opus, db-migration-reviewer Opus, performance-reviewer, design-system-reviewer, ux-reviewer, cross-platform-reviewer, integration-reviewer Opus — 0 à 8 agents selon le plan). Phase auto-fix ADR-aware : Bucket A (auto-résolution via ADR/PATTERNS/first principles, ~95%), Bucket B (input humain → nouvelle règle → auto-résolution future). Persistence structurée des issues dans metrics JSON. Auto-transition vers `/plan-execute` si tout auto-résolu.
+
+- **`/plan-execute` command** (`examples/commands/plan-execute.md`) — exécution complète jusqu'au PR mergé. Worktree isolé → TDD scaffolding (tests en échec d'abord) → exécution parallèle par niveaux (un agent par tâche, commit par tâche) → détection de drift → quality gate (lint + types + tests) → smoke test d'intégration (probe GraphQL, scan logs containers, commandes plan-defined) → réconciliation PRD + archivage plan → PR squash merge → métriques post-merge → cleanup worktree. Jusqu'à 3 tentatives auto-fix par debug agent avant escalade humaine.
+
+- **`planning-coordinator` agent** (`examples/agents/planning-coordinator.md`) — agent de synthèse Opus, read-only. Reçoit les rapports de tous les agents de recherche, lit les ADRs existants, résout les conflits entre agents (ADR precedence → agent stake → escalade humaine), construit le graphe de tâches (layers, TDD markers, granularité atomique), vérifie la complétude du plan (couverture PRD, findings sécurité adressés, acyclicité). Spawné automatiquement quand 2+ agents de recherche sélectionnés. Ne recherche pas — synthétise.
+
+- **`integration-reviewer` agent** (`examples/agents/integration-reviewer.md`) — agent de validation runtime Opus, read-only + WebFetch. Valide ce qui compile mais échoue à l'exécution : paramètres de connexion (ports, protocoles, hostnames entre environnements), cohérence async/sync (await manquants, sync call dans contexte async), complétude des env vars (`.env.example`, CI/CD, k8s manifests, validation au démarrage), API library correctness (version installée vs API utilisée via WebFetch), pipeline OTEL (exporter configuré, propagation de contexte cross-service, sampling). Triggéré dans `/plan-validate` quand de nouveaux services, bibliothèques ou config OTEL sont en scope.
+
 ## [3.31.0] - 2026-03-06
 
 ### Added
