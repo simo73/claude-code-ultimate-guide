@@ -541,7 +541,7 @@ security_gate_hook: "examples/hooks/bash/security-gate.sh" # file path ref
 
 ## 📄 Whitepapers (FR + EN)
 
-A series of 9 focused whitepapers covering Claude Code in depth. Each covers a specific topic and is available in both **French and English**.
+A series of 11 focused whitepapers covering Claude Code in depth. Each covers a specific topic and is available in both **French and English**.
 
 > **Coming soon** — currently in private access. Public release planned.
 
@@ -554,6 +554,18 @@ A series of 9 focused whitepapers covering Claude Code in depth. Each covers a s
 - **06** — *Privacy & Compliance* — Anthropic data, ZDR, retention policies
 - **07** — *Guide de Référence / Reference Guide* — Complete synthesis + advanced workflows
 - **08** — *Agent Teams* — Multi-agent orchestration and coordination
+- **09** — *Apprendre avec l'IA / Learning with AI* — UVAL protocol, comprehension debt, 30-day plan
+- **10** — *Budget IA / AI Budget* — Token costs, model selection, cost optimization
+
+## 🗂️ Recap Cards (FR)
+
+57 single-page A4 reference cards — printable, one concept per card. Organized in 3 series:
+
+> **Coming soon** — currently in private access. Public release planned alongside the whitepapers.
+
+- **Technique (22 cards)** — Commands, permissions, configuration, MCP, models, context window
+- **Méthodologie (22 cards)** — Daily workflow, agents, hooks, CI/CD, multi-agent, debug
+- **Conception (13 cards)** — Mental models, prompting, security by design, cost patterns
 
 ---
 
